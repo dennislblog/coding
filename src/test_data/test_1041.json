@@ -1,0 +1,22 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "instructions": "GGLLGG"
+      },
+      "expected": true
+    },
+    {
+      "args": {
+        "instructions": "GG"
+      },
+      "expected": false
+    },
+    {
+      "args": {
+        "instructions": "GL"
+      },
+      "expected": true
+    }
+  ]
+}

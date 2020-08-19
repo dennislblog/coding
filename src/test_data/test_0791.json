@@ -1,0 +1,11 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "s": "cba",
+        "t": "abcd"
+      },
+      "expected": "cbad"
+    }
+  ]
+}

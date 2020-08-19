@@ -1,0 +1,22 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "s": "ab-cd"
+      },
+      "expected": "dc-ba"
+    },
+    {
+      "args": {
+        "s": "a-bC-dEf-ghIj"
+      },
+      "expected": "j-Ih-gfE-dCba"
+    },
+    {
+      "args": {
+        "s": "Test1ng-Leet=code-Q!"
+      },
+      "expected": "Qedo1ct-eeLg=ntse-T!"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "s1": "sea",
+        "s2": "eat"
+      },
+      "expected": 231
+    },
+    {
+      "args": {
+        "s1": "delete",
+        "s2": "leet"
+      },
+      "expected": 403
+    }
+  ]
+}

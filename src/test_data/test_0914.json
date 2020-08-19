@@ -1,0 +1,34 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "deck": [1, 2, 3, 4, 4, 3, 2, 1]
+      },
+      "expected": true
+    },
+    {
+      "args": {
+        "deck": [1, 1, 1, 2, 2, 2, 3, 3]
+      },
+      "expected": false
+    },
+    {
+      "args": {
+        "deck": [1]
+      },
+      "expected": false
+    },
+    {
+      "args": {
+        "deck": [1, 1]
+      },
+      "expected": true
+    },
+    {
+      "args": {
+        "deck": [1, 1, 2, 2, 2, 2]
+      },
+      "expected": true
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "num_courses": 2,
+        "prerequisites": [
+          [1, 0]
+        ]
+      },
+      "expected": [
+        [0, 1]
+      ]
+    },
+    {
+      "args": {
+        "num_courses": 2,
+        "prerequisites": [
+          [1, 0],
+          [0, 1]
+        ]
+      },
+      "expected": [
+        []
+      ]
+    },
+    {
+      "args": {
+        "num_courses": 4,
+        "prerequisites": [
+          [1, 0],
+          [2, 0],
+          [3, 1],
+          [3, 2]
+        ]
+      },
+      "expected": [
+        [0, 1, 2, 3],
+        [0, 2, 1, 3]
+      ]
+    }
+  ]
+}

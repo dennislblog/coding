@@ -1,0 +1,19 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "s": "IDID"
+      }
+    },
+    {
+      "args": {
+        "s": "III"
+      }
+    },
+    {
+      "args": {
+        "s": "DDI"
+      }
+    }
+  ]
+}

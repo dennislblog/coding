@@ -1,0 +1,10 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "S": "ababcbacadefegdehijhklij"
+      },
+      "expected": [9, 7, 8]
+    }
+  ]
+}

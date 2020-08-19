@@ -1,0 +1,18 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "a": "this apple is sweet",
+        "b": "this apple is sour"
+      },
+      "expected": ["sweet", "sour"]
+    },
+    {
+      "args": {
+        "a": "apple apple",
+        "b": "banana"
+      },
+      "expected": ["banana"]
+    }
+  ]
+}

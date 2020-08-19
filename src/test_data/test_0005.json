@@ -1,0 +1,22 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "s": "babad"
+      },
+      "expected": "bab"
+    },
+    {
+      "args": {
+        "s": "cbbd"
+      },
+      "expected": "bb"
+    },
+    {
+      "args": {
+        "s": "a"
+      },
+      "expected": "a"
+    }
+  ]
+}

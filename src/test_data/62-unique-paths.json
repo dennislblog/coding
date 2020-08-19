@@ -1,0 +1,26 @@
+{
+    "problem": "uniquePaths",
+    "test_cases": [
+      {
+        "args": {
+          "m": 3,
+          "n": 2
+        },
+        "expected": 3
+      },
+      {
+        "args": {
+          "m": 7,
+          "n": 3
+        },
+        "expected": 28
+      },
+      {
+        "args": {
+          "m": 2,
+          "n": 1
+        },
+        "expected": 1
+      }
+    ]
+  }

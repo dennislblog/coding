@@ -1,0 +1,18 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "licensePlate": "1s3 PSt",
+        "words": ["step", "steps", "stripe", "stepple"]
+      },
+      "expected": "steps"
+    },
+    {
+      "args": {
+        "licensePlate": "1s3 456",
+        "words": ["looks", "pest", "stew", "show"]
+      },
+      "expected": "pest"
+    }
+  ]
+}

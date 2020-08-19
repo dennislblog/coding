@@ -1,0 +1,28 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "a": [2, 1]
+      },
+      "expected": false
+    },
+    {
+      "args": {
+        "a": [3, 5, 5]
+      },
+      "expected": false
+    },
+    {
+      "args": {
+        "a": [0, 3, 2, 1]
+      },
+      "expected": true
+    },
+    {
+      "args": {
+        "a": [1, 2]
+      },
+      "expected": false
+    }
+  ]
+}

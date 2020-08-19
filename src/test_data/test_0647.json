@@ -1,0 +1,28 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "s": "abc"
+      },
+      "expected": 3
+    },
+    {
+      "args": {
+        "s": "aaa"
+      },
+      "expected": 6
+    },
+    {
+      "args": {
+        "s": "abca"
+      },
+      "expected": 4
+    },
+    {
+      "args": {
+        "s": "cabac"
+      },
+      "expected": 7
+    }
+  ]
+}

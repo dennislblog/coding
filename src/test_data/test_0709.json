@@ -1,0 +1,22 @@
+{
+  "test_cases": [
+    {
+      "args": {
+        "str": "Hello"
+      },
+      "expected": "hello"
+    },
+    {
+      "args": {
+        "str": "here"
+      },
+      "expected": "here"
+    },
+    {
+      "args": {
+        "str": "LOVELY"
+      },
+      "expected": "lovely"
+    }
+  ]
+}
