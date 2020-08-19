@@ -1,9 +1,0 @@
-{
-  "test_cases": [
-    {
-      "args": {
-        "longUrl": "https://leetcode.com/problems/design-tinyurl"
-      }
-    }
-  ]
-}
