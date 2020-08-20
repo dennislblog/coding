@@ -8,6 +8,36 @@ import unittest
 import json
 
 
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+
+def tree2list(head):
+    """generate binary tree (level view) list from head treeNode
+
+    >>> tree = TreeNode(4, TreeNode(9), TreeNode(20, TreeNode(15), TreeNode(7)))
+    >>> tree2list(tree)
+    [4, 9, 20, None, None, 15, 7]
+    """
+    lst, queue = [], [head]
+    while queue:
+        tmpqueue = []
+        for item in queue:
+            if item is None:
+                lst.append(None)
+                tmpqueue.extend([None, None])
+            else:
+                lst.append(item.val)
+                tmpqueue.extend([item.left, item.right])
+        if not any(tmpqueue):
+            break
+        queue = tmpqueue
+    return lst
+
+
 class TestSolution(unittest.TestCase):
 
     @classmethod
@@ -23,7 +53,9 @@ class TestSolution(unittest.TestCase):
                 if isinstance(expect, list):
                     if isinstance(result, list):
                         result = sorted(result)
-                    expect = sorted(expect)
+                        expect = sorted(expect)
+                    elif hasattr(result, 'left'):
+                        result = tree2list(result)
                     self.assertListEqual(result, expect)
                 elif isinstance(expect, dict):
                     self.assertDictEqual(result, expect)
@@ -67,11 +99,12 @@ if __name__ == "__main__":
         sys.stdout.write("problem isn't found")
 
     ### load the module ###
+
     module = importlib.import_module(filename)
     solution = getattr(module, 'Solution', None)
 
     ### load the test case file ###
-    testfile = "test_data/%s.json" % filename
+    testfile = "json_data/%s.json" % filename
     testdata = load_json(testfile)
     method_name, test_cases = testdata["problem"], testdata["test_cases"]
     funcall = getattr(solution(), method_name)
