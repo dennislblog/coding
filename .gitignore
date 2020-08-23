@@ -5,3 +5,4 @@ leetcode.code-workspace
 /src/json_data/
 .ipynb_checkpoints
 commit.sh
+.vscode
