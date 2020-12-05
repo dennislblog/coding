@@ -30,16 +30,39 @@ class Solution:
     """
     def maxUncrossedLines(self, A: List[int], B: List[int]) -> int:
         na, nb = len(A), len(B)
-        prev = [0] * (nb + 1)
+        dp = [0] * (nb + 1)
         for a in A:
-            dp = [0] * (nb + 1)
+            prev = dp[:]
             for i, b in enumerate(B):
                 if a == b:
                     dp[i+1] = 1 + prev[i] 
                 else:
                     dp[i+1] = max(dp[i], prev[i+1])
-            prev = dp[:]
         return dp[-1]
 
 
         
+"""
+@类似的利用动态规划解题的还有经典的`Edit Distance问题, 
+    解决动态规划问题：
+        1) 确定dp的意义
+        2) 确定转移方程
+        3) 查看edge case, 比如这里要特别注意 dp[0] = i + 1这个点
+"""
+
+
+class Solution:
+    """
+    @问题： 给定  word1 = "horse", word2 = "ros" 返回多少个操作可以让 word1 -> word2 (删除,增加和替换都是 1 的操作)
+    """
+    def minDistance(self, word1: str, word2: str) -> int:
+        n1, n2 = len(word1), len(word2)
+        dp = list(range(n2+1))
+        for i, w1 in enumerate(word1):
+            pre = dp[:]; pre[0] = i; dp[0] = i+1
+            for j, w2 in enumerate(word2):
+                if w1 == w2:
+                    dp[j+1] = pre[j]
+                else:
+                    dp[j+1] = min(dp[j],pre[j],pre[j+1])+1
+        return dp[-1]
