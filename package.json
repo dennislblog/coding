@@ -1,0 +1,20 @@
+{
+    "name": "coding",
+    "author": "dennislblog <dennisl@udel.edu>",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/dennislblog/coding.git"
+    },
+    "version": "1.0.0",
+    "devDependencies": {
+        "@vuepress/plugin-back-to-top": "^1.7.1",
+        "vuepress": "^1.7.1"
+    },
+    "scripts": {
+        "build": "vuepress build docs",
+        "optimize": "node scripts/optimize.js",
+        "deploy": "bash deploy.sh",
+        "serve": "vuepress dev docs"
+    },
+    "main": "index.js"
+}

@@ -1,8 +1,12 @@
 leetcode.code-workspace
-/docs/
 /*/__pycache__/
 /src/test_data/
 /src/json_data/
 .ipynb_checkpoints
 commit.sh
 .vscode
+node_modules
+scripts
+*.lock
+*.log
+*.sh
