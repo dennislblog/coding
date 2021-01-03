@@ -10,4 +10,4 @@ scripts
 *.lock
 *.log
 *.sh
-/docs/
+/docs/.vuepress
