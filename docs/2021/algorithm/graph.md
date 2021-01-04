@@ -168,3 +168,31 @@ class Solution:
 :::
 
 ![131. Palindrome Partitioning](~@assets/lc-131.png#center)
+
+## 526. Beautiful Arrangement
+
+**问题**： 给定一个数`n`, 你从 `1,2...,n`的所有`permutation`中找出一共有多少种优美排列
+- 在优美排列中，第`i`个位置的数字必须要么被`i`整除，要么能够整除`i`
+
+**例子**： 比如给定`n=3`输出`3`，分别是 `[3,2,1],[1,2,3],[2,1,3]`
+::: details
+回溯法经典范例, 回溯法其实就是深度搜索，所以不用考虑并行的情况，用一个数组记录节点是否被访问过即可
+```python
+class Solution:
+    def countArrangement(self, n: int) -> int:
+        
+        def backtrack(pos, cnt):
+            if cnt >= n:
+                self.res += 1; return
+            for i in range(1, n+1):
+                if not visited[i] and ((i % pos == 0) or (pos % i == 0)):
+                    visited[i] = 1
+                    backtrack(pos+1, cnt+1)
+                    visited[i] = 0
+                    
+        visited = [0] * (n+1)
+        self.res = 0
+        backtrack(1, 0)
+        return self.res
+```
+:::
