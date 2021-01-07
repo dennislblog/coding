@@ -8,11 +8,13 @@
     "version": "1.0.0",
     "devDependencies": {
         "@vuepress/plugin-medium-zoom": "^1.7.1",
+        "markdown-it-include": "^2.0.0",
+        "markdown-it-katex": "^2.0.3",
+        "ts-loader": "^8.0.14",
         "vuepress": "^1.7.1",
         "vuepress-plugin-auto-sidebar": "^1.5.0",
         "vuepress-plugin-element-tabs": "^0.2.8",
         "vuepress-plugin-gitalk-maker": "^0.1.0",
-        "vuepress-plugin-mathjax": "^1.2.8",
         "vuepress-plugin-minimal-analytics": "^0.1.4",
         "vuepress-theme-reco": "1.4.7"
     },
@@ -22,5 +24,9 @@
         "deploy": "deploy.bat",
         "serve": "vuepress dev docs"
     },
-    "main": "index.js"
+    "main": "index.js",
+    "dependencies": {
+        "chokidar": "^3.4.3",
+        "typescript": "^4.1.3"
+    }
 }

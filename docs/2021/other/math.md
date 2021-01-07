@@ -16,3 +16,5 @@ $$\Phi (y) = \frac {1} {2 \pi i} \int_{2 - i \infty}^{2 + i \infty} \frac {y^{\o
 当 $\log x>= 10^4$ 及 $y>= e^{2{(\log x)}^{-0.1}}$ 时， 则有:
 
 $$1 - x^{- 0.1} <= \Phi (y) <= 1$$
+
+d

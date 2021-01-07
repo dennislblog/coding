@@ -12,3 +12,4 @@ scripts
 *.sh
 /docs/.vuepress
 /docs/assets
+/docs/include

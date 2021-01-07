@@ -16,36 +16,35 @@ tags:
 ::: details
 二分搜索, 找到最大的 `cap` 使得在 D 天内可以运到 (即 `shipWithinDays(cap) <= D`)
 ```python                            
-class Solution:
 """
     @day_when_capacity 返回以 cap 为大小的船，最短几天可以完成目标
 """
-    def shipWithinDays(self, weights: List[int], D: int) -> int:
-        
-        def day_when_capacity(cap):
-            days, csum = 1, 0
-            for w in weights:
-                if csum + w > cap:
-                    csum, days = w, days + 1
-                else:
-                    csum += w
-            return days
-        
-        low, high = 0, 0
+def shipWithinDays(self, weights: List[int], D: int) -> int:
+    
+    def day_when_capacity(cap):
+        days, csum = 1, 0
         for w in weights:
-            low = max(low, w)
-            high += w
-        
-        res = high                 #initialize answer to be max capacity
-        while low < high:
-            mid = (low + high) >> 1
-            day = day_when_capacity(mid)
-            if day > D:
-                low = mid + 1
-            else:                   #all res in this category satisfy d < D, find minimum
-                high = mid
-                res  = min(res, mid)
-        return res
+            if csum + w > cap:
+                csum, days = w, days + 1
+            else:
+                csum += w
+        return days
+    
+    low, high = 0, 0
+    for w in weights:
+        low = max(low, w)
+        high += w
+    
+    res = high                 #initialize answer to be max capacity
+    while low < high:
+        mid = (low + high) >> 1
+        day = day_when_capacity(mid)
+        if day > D:
+            low = mid + 1
+        else:                   #all res in this category satisfy d < D, find minimum
+            high = mid
+            res  = min(res, mid)
+    return res
 ```
 :::
 
@@ -60,26 +59,25 @@ class Solution:
 ::: details
 翻转的技巧，从后往前找到第一个拐点(比如图中的`4`), 然后翻转后面得到以`4`开头最小的数字, 然后用里面刚好比`4`大的数字(比如这里的`6`)去替换
 ```python                            
-class Solution:
-    def nextGreaterElement(self, n: int) -> int:
-        
-        def reverse(l, r):
-            while l < r:
-                num[l], num[r] = num[r], num[l]
-                l += 1
-                r -= 1
-        
-        num = list(str(n)); i = j = len(num) - 1
-        while i > 0 and num[i-1] >= num[i]:
-            i -= 1
-        if i == 0: return -1
-        reverse(i, j)
-        for k in range(i, j+1):
-            if num[k] > num[i-1]:
-                num[k], num[i-1] = num[i-1], num[k]
-                break
-        res = int(''.join(num))
-        return res if 1 <= res <= 2**31 - 1 else -1
+def nextGreaterElement(self, n: int) -> int:
+    
+    def reverse(l, r):
+        while l < r:
+            num[l], num[r] = num[r], num[l]
+            l += 1
+            r -= 1
+    
+    num = list(str(n)); i = j = len(num) - 1
+    while i > 0 and num[i-1] >= num[i]:
+        i -= 1
+    if i == 0: return -1
+    reverse(i, j)
+    for k in range(i, j+1):
+        if num[k] > num[i-1]:
+            num[k], num[i-1] = num[i-1], num[k]
+            break
+    res = int(''.join(num))
+    return res if 1 <= res <= 2**31 - 1 else -1
 ```
 :::
 
@@ -94,15 +92,14 @@ class Solution:
 ::: details
 就像图里描述的那样，先排好序，对于每一个点，分成两半，左边往上移(往下移会让差更大)，我们的目标是尽可能地让两段的位置差不多 (可能最高点 - 可能的最低点)
 ```python                            
-class Solution:
-    def smallestRangeII(self, A: List[int], K: int) -> int:
-        A.sort()
-        n = len(A); res = A[n-1] - A[0]
-        for i in range(n-1):
-            mn = min(A[0]+K, A[i+1]-K)
-            mx = max(A[i]+K, A[n-1]-K)
-            res = min(mx - mn, res)
-        return res
+def smallestRangeII(self, A: List[int], K: int) -> int:
+    A.sort()
+    n = len(A); res = A[n-1] - A[0]
+    for i in range(n-1):
+        mn = min(A[0]+K, A[i+1]-K)
+        mx = max(A[i]+K, A[n-1]-K)
+        res = min(mx - mn, res)
+    return res
 ```
 :::
 
@@ -116,23 +113,76 @@ class Solution:
 ::: details
 先扫描到第一个`size >= K`的地方，看图非常好理解
 ```python                            
-class Solution:
-    def decodeAtIndex(self, S: str, K: int) -> str:
-        size = 0 #在 s[i]之前的字母个数
-        # 1. 扫描到第一个 size >= K 的位置
-        for i, c in enumerate(S):
-            if c.isdigit():  size *= int(c)
-            else:            size += 1
-            if K <= size:    break
-        # 2. 对 K 取余 和 判断当下是否是数字
-        while i >= 0:
-            c = S[i]; K %= size
-            if K == 0 and c.isalpha():  
-                return c
-            if c.isdigit():  size /= int(c)
-            else:            size -= 1
-            i -= 1
+def decodeAtIndex(self, S: str, K: int) -> str:
+    size = 0 #在 s[i]之前的字母个数
+    # 1. 扫描到第一个 size >= K 的位置
+    for i, c in enumerate(S):
+        if c.isdigit():  size *= int(c)
+        else:            size += 1
+        if K <= size:    break
+    # 2. 对 K 取余 和 判断当下是否是数字
+    while i >= 0:
+        c = S[i]; K %= size
+        if K == 0 and c.isalpha():  
+            return c
+        if c.isdigit():  size /= int(c)
+        else:            size -= 1
+        i -= 1
 ```
 :::
 
 ![880. Decoded String at Index](~@assets/lc-880.png#center)
+
+
+## 1539. Kth Missing Positive Number
+
+**问题**： 给你一个严格升序排列正整数数组(例如`arr=[2,3,4,7]`)和一个整数(例如`k=3`), 答案应该是`6`, 因为正常排序应该是`12345678..`, 第3个缺失的数是`6`
+
+::: details
+方法1： 线性搜索, `arr[i] - (i+1)`代表当前位置前面有多少个缺失值
+```python                            
+def findKthPositive(self, arr: List[int], k: int) -> int:
+    for i, x in enumerate(arr):
+        dist = x - (i+1)
+        if k <= dist:
+            return x -1 - (dist - k) 
+    return x + (k - dist)
+```
+方法2： 二分搜索，其实就是在数组排序好前提下的线性搜索
+```python
+def findKthPositive(self, arr: List[int], k: int) -> int:
+    i, j = 0, len(arr) - 1
+    while i < j:
+        m = (i + j) >> 1
+        if arr[m] - (m+1) >= k:  j = m 
+        else:                    i = m + 1
+    dif = k - (arr[i] - (i+1))
+    if dif > 0:                  return arr[i] + dif
+    else:                        return arr[i] - 1 + dif
+```
+:::
+
+![1539. Kth Missing Positive Number](~@assets/lc-1539.png#center)
+
+## 3. Longest Substring Without Repeating Characters
+
+**问题**： 给定一个字符串(例如`s='abcdfdc'`)，请你找出其中不含有重复字符的最长子串的长度(例如这里就是`abcdf`, 答案是5)。
+
+::: details
+第一遍做的时候以为只有26个字母，结果还要考虑各种符号和数字，因此这里用上字典
+- 滑动窗口，当没有重复字母的时候，移动右边界，当有重复字母的时候，移动左边界
+- 这里左边界更新规则要取`max`是因为像 `pfdpppf`在遇到第二个`f`的时候，左边界不应该往后退(左边界应该一直往前走)
+```python                            
+def lengthOfLongestSubstring(self, s: str) -> int:
+    m_ = dict(); 
+    left, right, res = 0, 0, 0
+    for right, cur in enumerate(s):
+        if cur in m_:
+            left = max(m_[cur]+1, left)
+        m_[cur] = right
+        res = max(res, right - left + 1)
+    return res
+```
+:::
+
+![3. Longest Substring Without Repeating Characters](~@assets/lc-3.png#center)

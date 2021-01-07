@@ -17,7 +17,11 @@ tags:
 
 ## 支持Tex语法
 
-Euler's identity $e^{i\pi}+1=0$ is a beautiful formula in $\mathbb{R}^2$.
+$$\begin{aligned}
+  a&=b+c \cr
+  d+e&=f \\
+     &=\Big( r(s,a) + \gamma V^*(s') \Big)
+\end{aligned}$$
 
 ## 支持MultiTabs操作
 

@@ -7,28 +7,29 @@ tags:
    - Leetcode
 ---
 
-## 84. Largest Rectangle in Histogram (H)
-> Input: [2,1,5,6,2,3]
+## 82/83. Remove Duplicates from Sorted List I/II
 
-> Output: 10 (柱状图中最大的矩形)
+**问题**：给定一个链表(如`1->2->3->3->4->4->5`)，删除里面出现重复的数字，即得到`1->2->5`。 `83`题是要求每个元素只出现一次(就是保留重复的元素)
 
 ::: details
-给定 n 个非负整数，用来表示柱状图中各个柱子的高度，求出勾勒矩形的最大面积
-- 暴力解法是遍历每一种高度，然后向两边扩散找出这个高度下的矩形面积 O(N)
-- 栈就是空间换时间的做法，保证每一个元素下面是左边第一个比他矮的，而违反规则的则是右边第一个比他矮的
+关键在于怎么检测 `b` 节点没有挪动过, 如果 `b=a.next` 出现了重复, 那么`b' != a.next` 这种情况下只需要把 `a.next` 挪到 `b'+1`的位置即可 
 ```python                            
 class Solution:
-    def largestRectangleArea(self, heights: List[int]) -> int:
-        stack, res = [], 0
-        heights = [0] + heights + [0]
-        for i, height in enumerate(heights):
-            while stack and height < heights[stack[-1]]:
-                cur_height = heights[stack.pop()]
-                left, right = stack[-1]+1, i
-                res = max(res, (right - left) * cur_height)
-            stack.append(i)
-        return res
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        dummy = ListNode(-1000); dummy.next = head
+        a, b = dummy, dummy.next
+        while b and b.next:
+            while b and b.next and b.val == b.next.val:
+                b = b.next
+            if id(a.next) == id(b):
+                a = a.next
+            else:
+                a.next = b.next
+            b = b.next
+        return dummy.next
 ```
 :::
 
-![84. Largest Rectangle in Histogram](~@assets/lc-84.png#center)
+![82/83. Remove Duplicates from Sorted List I/II](~@assets/lc-82.png#center)
+
+
