@@ -13,4 +13,4 @@ scripts
 /docs/.vuepress
 /docs/assets
 /docs/include
-thesis*
+private*
