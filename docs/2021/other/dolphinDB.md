@@ -14,6 +14,8 @@ publish: true
 在这里记录数据获取和处理
 :::
 
+<!-- more -->
+
 ## 数据库
 
 ![总体架构](~@assets/dolphin-03.png#center)
@@ -79,7 +81,7 @@ s=ddb.session(enableSSL=True)
 :fist:
 用`loadText`方法把文本文件导入到DolphinDB的**内存表**中，注意`DATA_DIR`必须是完整路径, 而且注意`windows`操作系统下奇怪的路径。 默认分割符是逗号
 ```python
-DATA_DIR =r'C://Users//denni//thesis_2021//thesis_impact//tools//_dolphindb_//data'
+DATA_DIR =r'C://Users//denni//...//_dolphindb_//data'
 trade = s.loadText(DATA_DIR+'//example.csv', delimiter=',')
 ```
 :fist_right:

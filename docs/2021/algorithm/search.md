@@ -186,3 +186,25 @@ def lengthOfLongestSubstring(self, s: str) -> int:
 :::
 
 ![3. Longest Substring Without Repeating Characters](~@assets/lc-3.png#center)
+
+
+## 88. Merge Sorted Array
+
+**问题**： 把两个`有序`的数组合并，把结果放到`nums1`中去。 注意这里`nums1`是有额外存储空间的, 比如`nums1 = [1,2,3,0,0,0,0]`, `nums2 = [2,5,6,8]`。 另外输入中还包括`nums1`和`nums2`初始元素个数(m=3 and n=4)
+
+::: details
+双指针, 从后往前遍历, 当 `@i2 > @i1`时, 填入`@i2`, 否则往前移动`i1`, 直到其中一个指针不能移动为止。 有一个地方要注意就是当`i1`比`i2`先走完的时候, `@i2`之前的值要复制到`nums1`里面去, 比如`nums1=[3,6,0,0] and nums2=[1,2]`这种情况, 如果不加最后一行, 返回`[3,6,3,6]`
+```python                            
+def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+    i1, i2 = m-1, n-1
+    while i1 >= 0 and i2 >= 0:
+        k = i1 + i2 + 1
+        if nums2[i2] > nums1[i1]:
+            nums1[k] = nums2[i2]; i2 -= 1
+        else:
+            nums1[k] = nums1[i1]; i1 -= 1
+    nums1[:i2+1] = nums2[:i2+1]
+```
+:::
+
+![88. Merge Sorted Array](~@assets/lc-88.gif#center)

@@ -196,3 +196,103 @@ class Solution:
         return self.res
 ```
 :::
+
+## 127. Word Ladder
+
+**问题**： 给定两个单词(比如`beginWord = 'hit', endWord='cog`)和一个字典(比如`wordList = ["hot","dot","dog","lot","log","cog"]`) 问你从`beginWord`到`endWord`最少多少次转换, 每次转换只能变动一个字母，且必须是字典里的单词
+**例子**： 比如上面这个例子，答案是5，因为最短转换序列是 `"hit" -> "hot" -> "dot" -> "dog" -> "cog"`, 长度是`5`
+::: details
+一. 广度搜索（超时了）
+```python
+def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+    n, m = len(wordList), len(beginWord)
+    visited = set([beginWord])
+    que = collections.deque([(beginWord, 1)])
+    while que:
+        word, res = que.popleft()
+        if word == endWord:
+            return res
+        for i in range(m):
+            for j in range(26):
+                new_word = word[:i] + chr(97+j) + word[i+1:]
+                if new_word in wordList and not new_word in visited:
+                    visited.add(new_word)
+                    que.append((new_word, res+1))
+    return 0
+```
+二. 双向BFS，就是从终点和起点同时开始向中间搜索，什么时候搜索出现重合，两个不断向中间逼近
+```python
+def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
+    
+    def bfs(vis1, vis2, q):
+        word, res = q.popleft()
+        for i in range(nw):
+            for new_word in graph[word[:i]+'*'+word[i+1:]]:
+                if new_word in vis2:
+                    return vis2[new_word] + res
+                if not new_word in vis1:
+                    q.append((new_word, res + 1))
+                    vis1[new_word] = res + 1
+        return None
+
+    graph = defaultdict(set)
+    q1,q2 = deque([(beginWord, 1)]), deque([(endWord, 1)])
+    vis1,vis2 = {beginWord: 1}, {endWord: 1}
+    nw = len(beginWord)
+
+    if endWord not in wordList:
+        return 0
+    for word in wordList:
+        for i in range(nw):
+            graph[word[:i]+'*'+word[i+1:]].add(word)
+    while q1 and q2:
+        dis = bfs(vis1, vis2, q1)
+        if dis:
+            return dis
+        dis = bfs(vis2, vis1, q2)
+        if dis:
+            return dis
+```
+:::
+
+![127. Word Ladder](~@assets/lc-127.png#center)
+
+## 1649. Create Sorted Array through Instructions
+
+**问题**：给你一个整数数组 `instructions = [2,5,6,3,4,3]`要求按顺序插入, 然后计算每次插入的cost (cost的计算方法是 min(数组中比他小的元素个数, 数组中比他大的元素个数))
+**例子**： 比如上面这个例子，答案是4，因为一开始 `nums = []`
+```
+    插入 2 ，代价为 min(0, 0) = 0 ，现在 nums = [2] 。
+    插入 5 ，代价为 min(1, 0) = 0 ，现在 nums = [2,5] 。
+    插入 6 ，代价为 min(2, 0) = 0 ，现在 nums = [2,5,6] 。
+    插入 3 ，代价为 min(1, 2) = 1 ，现在 nums = [2,3,5,6] 。
+    插入 4 ，代价为 min(2, 2) = 2 ，现在 nums = [2,3,4,5,6] 。
+    插入 3 ，代价为 min(1, 3) = 1 ，现在 nums = [2,3,3,4,5,6] 。
+    总代价为 1+2+1 = 4 。
+```
+::: details
+用一个叫做树状数组的方法做, 这种方法适合求区间和(sum of value, sum of count, etc)，比如上面这个例子, 需要构建两个方法, 一个是更新树状数组, 一个是提取树状数组的presum, `n-query(x)`的意义在于`n`是目前总共插入的个数, `query(x)`得到树状数组`presum(x)`, 比如`5='0b101'=tree[5] + tree[4]`就是减掉末尾第一个不为`0`的`1`。 这样总个数减掉包含自己的之前的个数，就等于比自己大的数的个数
+```python
+def createSortedArray(self, instructions: List[int]) -> int:
+    def update(k):
+        while k <= limit:
+            tree[k] += 1
+            k += (k & -k)
+    def query(k):
+        ret = 0
+        while k:
+            ret += tree[k]
+            k -= (k & -k)
+        return ret
+
+    limit = max(instructions); tree = [0] * (limit + 1)
+    res, MOD = 0, 10**9 + 7
+    for n, x in enumerate(instructions):
+        res += min(query(x-1), n - query(x))
+        update(x)
+    return res % MOD
+```
+:::
+
+
+![1649. Create Sorted Array through Instructions](~@assets/lc-1649.png#center)
