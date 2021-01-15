@@ -208,3 +208,60 @@ def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
 :::
 
 ![88. Merge Sorted Array](~@assets/lc-88.gif#center)
+
+## 881. Boats to Save People
+
+**问题**： 一条船**最多**坐两个人，同时船有个载重，问最少需要`多少条船`才能装下所有人。 例如`people=[3,2,1,2]`, 船一次最多`limit=3`, 那么需要三艘船至少才能把人都载过去
+
+::: details
+一开始想复杂了, 因为没注意一条船只能最多做两个人，其实即使允许坐多人，也应该先排序，但明显比较复杂。 但只说最多两个人就简单了，如果轻的+重的大于船载重, 让重的先坐, 因为轻的人可以和别人挤但重的不行。
+```python                            
+def numRescueBoats(self, people: List[int], limit: int) -> int:
+    people.sort()
+    i, j = 0, len(people) - 1; res = 0
+    while i <= j:
+        if people[i] + people[j] <= limit:
+            i += 1
+        j-= 1; res += 1
+    return res
+```
+:::
+
+## 1658. Minimum Operations to Reduce X to Zero
+
+**问题**： 给你一个整数数组(比如`nums = [1,1,4,2,3]`)和一个整数(比如`x = 5`), 每次操作你可以从`nums`的两个边选一个数, 然后从`x`中减去该元素的值。请问最少选多少个能把`x`刚好减到`0`。 
+
+**例子**： 比如上面这个例子里, 最少两次, 依次移除后两个元素，`x-3-2=0`
+
+::: details
+1. 这其实就是个求和问题, :one: 全在左边; :two: 全在右边; :three: 两个交叉
+```python
+def minOperations(self, nums: List[int], x: int) -> int:
+    left, right = {}, {}
+    n = len(nums) - 1; res = 0
+    total = 0 
+    for i in range(nums):
+        total += nums[i]; left[total] = i+1
+    total = 0
+    for i in range(nums):
+        total += nums[n-i]; right[total] = i+1
+    res = min(left.get(x, float('inf')),right.get(x, float('inf')))
+    for key in left:
+        if x - key in right:
+            res = min(res, left[key] + right[x-key])
+    return -1 if res == float('inf') else res
+```
+2. 用滑动窗口的办法, 要求外部最短, 即找中间最大, 可以参考[这道题](https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/)。 找到中间(包括左右闭区间)最长的一段, 使得和等于`total - x`
+```python
+def minOperations(self, nums: List[int], x: int) -> int:
+    i, j = 0, 0 #sliding window left and right idx
+    total, maxLen, n, target = 0, -1, len(nums), sum(nums) - x
+    while i < n:
+        while j < n and total < target:
+            total += nums[j]; j += 1
+        if total == target:
+            maxLen = max(maxLen, j-i)
+        total -= nums[i]; i += 1
+    return n - maxLen if maxLen != -1 else -1
+```
+:::
