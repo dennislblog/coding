@@ -90,3 +90,81 @@ class Solution:
 :::
 
 ![739. Daily Temperatures](~@assets/lc-739.png#center)
+
+
+## 215. Kth Largest Element in an Array
+
+**题目**: 找到序列中第`k`大的元素, 比如 `nums = [3,2,1,5,6,4] and k = 2`
+
+**要求**: 用python一行就可以搞定`heapq.nlargest(k, nums)[k-1]`, 这里要求手动实现堆排序和快排
+
+:::: tabs
+::: tab 堆排序
+```python
+def findKthLargest(self, nums: List[int], k: int) -> int:
+    def heap_up(idx):
+        val = minheap[idx]                       #临时存储需要上浮的元素
+        while idx > 0 and minheap[(idx-1)>>1] > val:
+            minheap[idx] = minheap[(idx-1)>>1]   #父节点下沉
+            idx = (idx - 1) >> 1                 #index -> 父节点
+        minheap[idx] = val                       #替换上浮的元素
+    def heap_down(start, end):
+        head_val = minheap[start]; idx = start          
+        while 2*idx + 1 <= end:
+            child = 2*idx + 1
+            if child + 1 <= end and minheap[child] > minheap[child+1]:
+                child = child + 1                #比较左右子节点, 选小的那个
+            if minheap[child] < head_val:
+                minheap[idx] = minheap[child]
+                idx = child
+            else:
+                break
+        minheap[idx] = head_val                  #完成节点下沉(head始终是最小)
+
+    minheap = []
+    for i in range(min(len(nums), k)):
+        minheap.append(nums[i])
+        heap_up(i)
+    for num in nums[k:]:
+        if num > minheap[0]: #heap始终保持当前最大的K个数, head是第K个
+            minheap[0] = num
+            heap_down(0, k-1)
+    return minheap[0]
+```
+:::
+::: tab 快速排序
+``` python
+def findKthLargest(self, nums, k) -> int:
+    def partition(i, j):
+        k = nums[i]                           #pivot,小于放左边, 大于放右边
+        while i < j:
+            while i < j and nums[j] >= k:     #大于pivot的不动
+                j -= 1
+            nums[i], nums[j] = nums[j], nums[i]                  
+            while i < j and nums[i] <= k:     #小于pivot的不动
+                i += 1
+            nums[j], nums[i] = nums[i], nums[j]
+        return i
+    n = len(nums)
+    low, high = 0, n - 1
+    while low <= high:
+        p = partition(low, high)
+        if n - p > k:                #在p这个点上, 往右n-p个元素(包括自己)
+            low = p + 1              #pivot向右边移
+        elif n - p < k:
+            high = p - 1
+        else:
+            return nums[p]           #这个就是正好右边k-1个比自己大的数
+    return -1
+```
+:::
+::::
+
+<center>
+    
+![快速排序](~@assets/lc-quicksort.gif#left)
+![堆排序](~@assets/lc-heapsort.gif#left)
+![归并排序](~@assets/lc-mergesort.gif#left)
+
+</center>
+
