@@ -200,18 +200,19 @@ def naive_dot(np.ndarray[DTYPEf_t, ndim=2] a, np.ndarray[DTYPEf_t, ndim=2] b):
 当设置了断点后, Python程序会在第一个断点之前停止运行, 常用Pdb命令包括
 :::: tabs type: card
 ::: tab 基本
-```
+```{3-8}
 h(elp)          帮助
 q(quit)         退出
 pp(rint)        漂亮打印
 w(here)         当前位置
 l(ist) 1,4      显示当前文件第1->4行 (ll打印整个文件)
-a(rgs)          打印
+a(rgs)          打印函数的参数
+vars            列出对象的所有属性变量
 dir/local       打印当前局部变量
 ```
 :::
 ::: tab 移动
-``` 
+```{1}
 <ENTER>         重复上一个操作, 相当于vim的.
 n(ext)          执行下一条命令, 不进入函数内部运行过程
 s(tep)          进入这一行的一个函数内部
@@ -223,7 +224,7 @@ j(ump)          在同一个文件中跳跃(行)
 ```
 :::
 ::: tab 断点
-```
+```{4}
 b(reak)         显示当前所有断点和他们的ID
 b(reak) 17      在当前文件第
 b a/b:21        在当前路径下的`a/b.py`文件的第21行插入断点
