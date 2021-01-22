@@ -98,8 +98,9 @@ class Solution:
 
 **要求**: 用python一行就可以搞定`heapq.nlargest(k, nums)[k-1]`, 这里要求手动实现堆排序和快排
 
-:::: tabs
-::: tab 堆排序
+::::: tabs type: card
+:::: tab 堆排序
+::: details
 ```python
 def findKthLargest(self, nums: List[int], k: int) -> int:
     def heap_up(idx):
@@ -132,7 +133,9 @@ def findKthLargest(self, nums: List[int], k: int) -> int:
     return minheap[0]
 ```
 :::
-::: tab 快速排序
+::::
+:::: tab 快速排序
+::: details
 ``` python
 def findKthLargest(self, nums, k) -> int:
     def partition(i, j):
@@ -159,6 +162,7 @@ def findKthLargest(self, nums, k) -> int:
 ```
 :::
 ::::
+:::::
 
 <center>
     
@@ -167,4 +171,143 @@ def findKthLargest(self, nums, k) -> int:
 ![归并排序](~@assets/lc-mergesort.gif#left)
 
 </center>
+
+## 括号问题
+
+__问题__： 这种题目有很多变式, 相关的题目有`32, 最长有效括号`, `20, 判断括号是否有效` 等等
+
+::::::: tabs type: card
+:::::: tab 32. Longest Valid Parentheses
+__例子__： ")()())"的最长有效括号子串的是"()()", 长度为4
+::::: tabs type: card
+:::: tab 栈
+::: details
+- 这个算法不是我自己想的, 太天才了, 先假定入栈一个')', 这样是为了区分之后'()'和')'两种情况, 前者匹配之后')'还会留在栈里, 后者直接把')'顶出去, 导致栈为空
+```python                            
+def longestValidParentheses(self, s: str) -> int:
+    max_len = 0; stack = [-1]
+    for i, x in enumerate(s):
+        if x == '(':                     # now x == '('
+            stack.append(i)
+        else:                            # now x == ')'
+            stack.pop()                  # 如果栈顶是'(', pop后栈就决不是空的
+            if not stack:  
+                stack.append(i)
+            else:
+                max_len = max(max_len, i - stack[-1])
+    return max_len
+```
+:::
+::::
+:::: tab 动态规划
+- 状态： dp[i]表示**以下标i为结尾**的最长有效子串的长度, 比如`(()())`, dp = [0,0,2,0,4,6]
+- 状态转移方程
+    1. `s[i] == '('`, 好处理, 直接为0
+    2. `s[i] == ')'`, 要再分两种情况
+        > `s[i-1] == '('`, 直接等于`dp[i-2]+2`<br>
+        > `s[i-1] == ')'`, 那么dp[i-1]就告诉我们以i-1结尾有多少有小括号, 那么`dp[i] = dp[i-dp[i-1]-2] + dp[i-1] + 2(if s[i-dp[i-1]-1])=='('`
+::: details
+```python                            
+def longestValidParentheses(self, s: str) -> int:
+    if not s: return 0
+    n = len(s); dp = [0] * n
+    for i, x in enumerate(s):
+        if x == '(': 
+            dp[i] = 0
+        else:
+            if i-1 >= 0 and s[i-1] == '(':
+                dp[i] = (0 if i-2<0 else dp[i-2]) + 2
+            elif i-dp[i-1]-1 >= 0 and s[i-dp[i-1]-1] == '(':    #其实我觉得这个地方一定是`(`
+                dp[i] = (0 if i - dp[i-1] - 2 < 0 else dp[i-dp[i-1]-2]) + dp[i-1] + 2
+    return max(dp)
+```
+:::
+::::
+:::::
+::::::
+:::::: tab 20. valid parenthesis
+__例子__： "}})({{" 是无效括号, "{({})}" 是有效括号
+::::: details
+```python                            
+def isValid(self, s: str) -> bool:
+    m_ = {")": "(", "]": "[", "}": "{"}
+    stack = []
+    for x in s:
+        if not stack: stack.append(x)
+        else:
+            if x in m_ and m_[x] != stack.pop():
+                return False
+            elif not x in m_:
+                stack.append(x)
+    return not stack
+```
+:::::
+::::::
+![有效括号](~@assets/lc-32.png#center)
+:::::::
+
+## 保持顺序问题
+
+__问题__： 像是`1673. 找出最具竞争力的子序列`这样的, 要求找出子序列, 但是子序列元素的先后次序不能改变
+
+::::::: tabs type: card
+::: right
+凡是涉及删减, 但又必须保持原来先后次序的, 考虑使用单调栈
+:::
+:::::: tab 1673. Competitive
+__例子__： `nums = [3,5,2,6], k = 2`, 中长度为2的最有竞争力子序不是`[2,3]`而是`[2,6]`因为3在2的前面
+::: details
+```python
+def mostCompetitive(self, nums: List[int], k: int) -> List[int]:
+    n = len(nums); left = n - k
+    stack = [nums[0]]
+    for i in range(1,n):
+        while stack and left and stack[-1] > nums[i]:
+            stack.pop(); left -= 1
+        stack.append(nums[i])
+    return stack[:k]
+```
+:::
+::::::
+:::::: tab 402. Remove K Digits
+__例子__： `nums = "1432219", k = 3`, 中去掉3个数, 得到最大子串`1219`而不是`1122`, 后者打破了原来元素之间的先后顺序
+:::: details
+::: danger 同上面不太一样的是这里要考虑`leading zero`的问题
+```python
+def removeKdigits(self, num: str, k: int) -> str:
+    n = len(num); stack = []; left=n-k
+    for i in range(n):
+        cur = num[i]
+        while stack and k and stack[-1] > cur:
+            stack.pop(); k -= 1
+        stack.append(cur)
+    return "".join(stack[:left]).lstrip('0') or '0'
+```
+:::
+::::
+::::::
+:::::: tab 1081. Smallest Distinct
+__例子__： `s = "cbacdcbc"`, 最小非重复子序列是`acdb`, 而不是`abcd`, 因为`a`后面先有`c`,`d`才有`b`
+:::: details
+::: danger 同上面不太一样的是这里要求所有字母都得有, 且只保留第一个出现的这个字母, 次数统计的意义是避免过度删除某个字母, 导致后面不会再出现了
+```python
+def smallestSubsequence(self, s: str) -> str:
+    remain = collections.Counter(s)          #we cannot further pop this letter if 
+    n = len(s); stack = []
+    for x in s:
+        if not x in stack:
+            while stack and stack[-1] > x and remain[stack[-1]] > 0:
+                stack.pop()
+            stack.append(x)
+        remain[x] -= 1
+    return ''.join(stack)
+```
+:::
+::::
+::::::
+:::::: tab 316. Max-Number
+__例子__： `nums1 = [3, 4, 6, 5], nums2 = [9, 1, 2, 5, 8, 3], k = 5`, 拼接后最大的数(长度为5)是`[9,8,6,5,3]`
+- 难点在于怎么确定从`nums1`取多少个, 从`nums2`取多少个, 使得加起来等于`k`, 只想到了暴力解法, k1=0,1,2,3,4,5, k2=5-k1, 然后分别取, 最后合并
+::::::
+::::::: 
 
