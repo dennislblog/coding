@@ -90,11 +90,14 @@ public static void main(String args[]){
 :::
 ::: tab 自定义组件
 ```md
-<quiz v-bind:quizNum=1 />
+<quiz :quizNum=1 />
 ```
-<quiz v-bind:quizNum=1 />
+<quiz :quizNum=1 />
 :::
 ::::
 
-<!-- ## 图标
-我还没弄清楚怎么把`plotly`导进来, 而且要找到`load-json`的办法 -->
+## 图表
+我还没弄清楚怎么把`plotly`导进来, 而且要找到`load-json`的办法, 暂时使用的[chart.js](https://www.chartjs.org/docs/latest/charts/line.html)
+
+<!-- <test-vue/> -->
+

@@ -7,12 +7,19 @@
     },
     "version": "1.0.0",
     "devDependencies": {
+        "@iktakahiro/markdown-it-katex": "^4.0.1",
+        "@talltotal/vuepress-plugin-ppt": "^0.0.5",
         "@vuepress/plugin-medium-zoom": "^1.7.1",
+        "chart.js": "^2.9.4",
+        "ify-loader": "^1.1.0",
         "markdown-it-footnote": "^3.0.2",
         "markdown-it-include": "^2.0.0",
         "markdown-it-katex": "^2.0.3",
         "markdown-it-mark": "^3.0.1",
+        "plotly.js": "^1.58.4",
+        "transform-loader": "^0.2.4",
         "ts-loader": "^8.0.14",
+        "vue-chartjs": "^3.5.1",
         "vuepress": "^1.7.1",
         "vuepress-plugin-auto-sidebar": "^1.5.0",
         "vuepress-plugin-element-tabs": "^0.2.8",
@@ -24,7 +31,7 @@
         "build": "vuepress build docs",
         "optimize": "node scripts/optimize.js",
         "deploy": "deploy.bat",
-        "serve": "vuepress dev docs"
+        "serve": "vuepress dev docs --temp .temp"
     },
     "main": "index.js",
     "dependencies": {

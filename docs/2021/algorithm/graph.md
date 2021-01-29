@@ -52,10 +52,75 @@ class Solution:                                            |   class Solution:
 
 ![1345. Jump Game](~@assets/lc-1345.png#center)
 
+## 987. Vertical Order Traversal of a Binary Tree
+**问题**: 一个二叉树, 从左到右竖着看, 每列的结果放到一起, 那么结果是什么样的
+
+**例子**: 比如下面那个图, 答案是`[[4],[2],[1,5,6],[3],[7]]`即从左到右, 从上到下下, 同一层的话则数值从小到大(比如这里的5和6)
+
+::::: tabs type: card
+其实重点在于如何得到((-2,2,4),(-1,1,2),(0,0,1),(0,2,5),(0,2,6),(1,1,3),(2,2,7)), 所以我们可以通过DFS或者BFS获得这个这一信息
+:::: tab DFS
+::: details
+```python
+def verticalTraversal(self, root: TreeNode) -> List[List[int]]:
+
+    def dfs(root, x, y):
+        if root: 
+            m_.append((x,y,root.val))
+            dfs(root.left, x-1, y+1)
+            dfs(root.right, x+1, y+1)
+
+    m_ = []
+    dfs(root, 0, 0)
+    res = []; m_.sort()
+    pre = float('-inf')
+    for x,y,val in m_:
+        if x != pre:
+            res.append([val]); pre=x
+        else:
+            res[-1].append(val)
+    return res
+```
+:::
+::::
+:::: tab BFS
+::: details
+```python
+def verticalTraversal(self, root: TreeNode) -> List[List[int]]:
+
+    def bfs(root):
+        q = collections.deque([(root,0,0)])
+        while q:
+            cur, x, y = q.popleft()
+            m_.append((x,y,cur.val))
+            if cur.left:
+                q.append((cur.left, x-1, y+1))
+            if cur.right:
+                q.append((cur.right, x+1, y+1))
+
+    m_ = []
+    bfs(root)
+    res = []; m_.sort()
+    pre = float('-inf')
+    for x,y,val in m_:
+        if x != pre:
+            res.append([val]); pre=x
+        else:
+            res[-1].append(val)
+    return res
+```
+:::
+::::
+:::::
+
+![987. Vertical Order Traversal of a Binary Tree](~@assets/lc-987.png#center)
+
 ## 98. Validate Binary Search Tree 
 **问题**：判断一棵树是不是BST
+::::: tabs type: card
+:::: tab 递归
+要求 左子树最大值 < cur.val < 右子树最小值
 ::: details
-1. `递归`，要求 左子树最大值 < cur.val < 右子树最小值
 ```python                            
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
@@ -68,7 +133,11 @@ class Solution:
         
         return helper(root, float('-inf'), float('inf'))
 ```
-2. 也可以直接`in-order`遍历, 如果不是一直升序, 返回False
+:::
+::::
+:::: tab 中序
+如果不是一直升序, 返回`False`
+::: details
 ```python
 class Solution:
     def isValidBST(self, root: TreeNode) -> bool:
@@ -83,6 +152,8 @@ class Solution:
         return inorder(root)
 ```
 :::
+::::
+:::::
 
 ![98. Validate Binary Search Tree](~@assets/lc-98.png#center)
 

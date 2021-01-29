@@ -15,6 +15,9 @@ $$\Phi (y) = \frac {1} {2 \pi i} \int_{2 - i \infty}^{2 + i \infty} \frac {y^{\o
 
 当 $\log x>= 10^4$ 及 $y>= e^{2{(\log x)}^{-0.1}}$ 时， 则有:
 
-$$1 - x^{- 0.1} <= \Phi (y) <= 1$$
+<!-- $$1 - x^{- 0.1} <= \Phi (y) <= 1$$ -->
 
-d
+$$\begin{aligned}
+    \mathbb{E}(x) &= \frac{1}{2}\gamma X^2 + \epsilon X + (\eta - \frac{1}{2}\gamma\tau)\frac{X^2}{T} \\[0.5em] 
+    \mathbb{V}(x) &= \frac{1}{3}\sigma^2X^2T\Big(1-\frac{1}{N}\Big)\Big(1-\frac{1}{2N}\Big)
+\end{aligned}$$

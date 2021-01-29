@@ -53,37 +53,6 @@ class Solution:
 
 ![289. Game of Life](~@assets/lc-289.png#center)
 
-## 1631. path with minimum effort (M)
-> Input: heights = [[1,2,2],[3,8,2],[5,3,5]]
-
-> Output: 2 (路径 [1,3,5,3,5] 左上到右下连续格子的差值绝对值最大为 2, 其他路径大于等于2)
-
-**问题**：问你从左上角到右下角的所有路径（上下左右为valid move）哪条路径消耗的体力值最低。 **一条路径耗费的 体力值 是路径上 >相邻< 格子之间 高度差绝对值 的 最大值 决定的。** 
-::: details
-典型的搜索的题目, `f[x][y]`记录从出发到`[x][y]`这条路径上所消耗的最大体力值, `inq[x][y]`防止重复访问, `while (h < len(q))` 保证步数的上限
-```python                            
-class Solution:
-    def minimumEffortPath(self, heights: List[List[int]]) -> int:
-        n = len(heights); m = len(heights[0])
-        f = [[1000000000 for j in range(m)] for i in range(n)]; f[0][0] = 0
-        inq = [[False for j in range(m)] for i in range(n)]; inq[0][0] = True
-        q = [[0, 0]]; h = 0
-        dx = [0, 1, 0, -1]; dy = [1, 0, -1, 0]
-        while(h<len(q)):
-            x, y = q[h]
-            h += 1; inq[x][y] = False
-            for i in range(4):
-                a = x+dx[i]; b = y+dy[i]
-                if n>a>=0 and m>b>=0 and f[a][b]>max(f[x][y], abs(heights[x][y]-heights[a][b])):
-                    f[a][b] = max(f[x][y], abs(heights[x][y]-heights[a][b])) #更新状态
-                    if not inq[a][b]:
-                        q.append([a, b])
-                        inq[a][b] = True
-        return f[n-1][m-1]
-```
-:::
-
-![1631. path with minimum effort](~@assets/lc-1631.png#center)
 
 ## 59. Spiral Matrix II (M)
 > Input: n = 3
@@ -146,5 +115,28 @@ def spiralMatrixIII(self, R: int, C: int, r0: int, c0: int):
 ```
 :::
 
-
 ![885. Spiral Matrix III](~@assets/lc-885.png#center)
+
+
+## 1329. Sort the Matrix Diagonally
+
+**问题**：将同一条对角线上的元素（从左上到右下）按升序排序后，返回排好序的矩阵
+
+::: details
+用一个堆存放对角线元素, 然后一个一个pop出来, 也可以用list-sort-pop
+> 对角线元素的$(i-j)$是一样的
+```python
+def diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:
+    lsts = collections.defaultdict(list)
+    m, n = len(mat), len(mat[0])
+    for i in range(m):
+        for j in range(n):
+            heapq.heappush(lsts[i-j], mat[i][j])
+    for i in range(m):
+        for j in range(n):
+            mat[i][j] = heapq.heappop(lsts[i-j])
+    return mat
+```
+:::
+
+![1329. Sort the Matrix Diagonally](~@assets/lc-1329.png#center)

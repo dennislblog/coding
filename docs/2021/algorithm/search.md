@@ -7,49 +7,248 @@ tags:
    - Leetcode
 ---
 
-## 1011. Capacity To Ship Packages Within D Days
-> Input: weights = [1,2,3,4,5,6,7,8,9,10], D = 5
+__二分法__： 通过预估一个可能的值, 看是否能做出来, 然后不断缩小范围, 如果不符合就增大
 
-> Output: 以 15 作为载重的船，可以在 5 天内将货物运到
+:::::: tabs type: card
+::::: tab 最不费力
+## 1631. path with minimum effort (M)
+**问题**：问你从左上角到右下角的所有路径（上下左右为valid move）哪条路径消耗的体力值最低。 **一条路径耗费的 体力值 是路径上 >相邻< 格子之间 高度差绝对值 的 最大值 决定的。** 
 
-**问题**：把一个数组按顺序输入，每天一艘船，并且每天船的承载量相同，在D天之内需要全部运出去。求每艘船的承载量最少是多少。 不能拆分 weight, 即必须一次性把 weights[i] 运出去。
 ::: details
-二分搜索, 找到最大的 `cap` 使得在 D 天内可以运到 (即 `shipWithinDays(cap) <= D`)
-```python                            
-"""
-    @day_when_capacity 返回以 cap 为大小的船，最短几天可以完成目标
-"""
+需要返回`j`而不是`mid`是因为`j`是能确保成功的, 而`i`和`mid`则不一定
+```python
+def minimumEffortPath(self, heights: List[List[int]]) -> int:
+
+    def dfs(x, y, cap):
+        if x == ncol -1 and y == nrow - 1: return True
+        visited[y][x] = True  #能以cap走到最后一格才算成功
+        for i in range(4):
+            nx, ny = x + dx[i], y + dy[i]
+            if 0 <= nx < ncol and 0 <= ny < nrow and not visited[ny][nx] and abs(heights[ny][nx] - heights[y][x]) <= cap:
+                return dfs(nx, ny, cap):
+        return False
+
+    nrow, ncol = len(heights), len(heights[0])
+    dx, dy = (0,0,-1,1),(-1,1,0,0)  #上下左右
+    i, j = 0, 1000000
+    while i < j:
+        visited = [[False] * ncol for _ in range(nrow)]
+        mid = (i + j) >> 1
+        if dfs(0, 0, mid):     j = mid
+        else:                  i = mid + 1
+    return j
+```
+:::
+![1631. path with minimum effort](~@assets/lc-1631.png#center)
+:::::
+::::: tab 最小载重
+## 1011. Capacity To Ship Packages Within D Days
+**问题**：把一个数组按顺序输入，每天一艘船，并且每天船的承载量相同，在D天之内需要全部运出去。求每艘船的承载量最少是多少。 不能拆分 weight, 即必须一次性把 weights[i] 运出去。
+
+**例子**：例如`weights = [1,2,3,4,5,6,7,8,9,10], D = 5`, 则最小船载重为15, 可以在5天内将货物按顺序运到
+
+::: details
+`i,j`的起始边界设置很重要, 最快可以用一个`cap=sum(weights)`的船一天拉走, 最慢可以用一个`cap=max(weights)`的慢慢拉
+```python
 def shipWithinDays(self, weights: List[int], D: int) -> int:
-    
-    def day_when_capacity(cap):
+
+    def can_finish(cap):
         days, csum = 1, 0
         for w in weights:
             if csum + w > cap:
                 csum, days = w, days + 1
             else:
                 csum += w
-        return days
-    
-    low, high = 0, 0
-    for w in weights:
-        low = max(low, w)
-        high += w
-    
-    res = high                 #initialize answer to be max capacity
-    while low < high:
-        mid = (low + high) >> 1
-        day = day_when_capacity(mid)
-        if day > D:
-            low = mid + 1
-        else:                   #all res in this category satisfy d < D, find minimum
-            high = mid
-            res  = min(res, mid)
-    return res
+        return days <= D
+
+    i, j = max(weights), sum(weights)
+    while i < j:
+        mid = (i + j) >> 1
+        if can_finish(mid):    j = mid
+        else:                  i = mid + 1
+    return j
 ```
 :::
-
 ![1011. Capacity To Ship Packages Within D Days](~@assets/lc-1011.png#center)
+:::::
 
+::::: tab 分割数组
+## 410. Split Array Largest Sum
+**问题**：把一个非负整数数组分成`m`份, 使得各自和的最大值最小
+
+**例子**：例如`nums=[7,2,5,10,8], m = 2`, 最好的分法是将其分为`[7,2,5]` 和 `[10,8]`, 因为这个时候各自的和分别为`14`和`18`, 答案为18, 在所有情况中最小; ==`[7,2,8`,`[5,10]`貌似更小, 但是这里切割得保持原来的次序, 所以不符合规则==
+
+::: details
+和上面那道一模一样, 就是模板题, 注意答案的上界和下界就好
+```python
+def splitArray(self, nums: List[int], m: int) -> int:
+
+    def can_finish(cap):
+        csum, group = 0, 1
+        for num in nums:
+            if csum + num > cap:   csum, group = num, group + 1
+            else:                  csum += num
+            if group > m:          
+                return False
+        return True
+
+    i, j = max(nums), sum(nums)
+    while i < j:
+        mid = (i + j) >> 1
+        if can_finish(mid):
+            j = mid
+        else:
+            i = mid + 1
+    return j
+```
+:::
+![410. Split Array Largest Sum](~@assets/lc-410.png#center)
+:::::
+
+::::: tab 乘法表第K小
+## 668. Kth Smallest Number in Multiplication Table
+**问题**： 给定高度`m`宽度`n`的一张`m x n`的乘法表, 以及正整数`k`, 你需要返回表中第`k`小的数字。
+
+**例子**：例如`m = 3, n = 3, k = 5`, 乘法表如下, `3x3`的表中第`k=5`小的数字是`3(因为1,2,2,3,3,4,6,6,9)`
+::: details
+`m x n`的乘法表, `at_least_k(x)`描述了$\text{x}$是否足够大可以成为乘法表中的$k^{th}$值, 注意每一行的数字除以行数得到的是一样的, 这个还是超时了, `test case = [9895, 28405, 100787757]`
+```python
+def findKthNumber(self, m: int, n: int, k: int) -> int:
+
+    def at_least_k(x):
+        cnt = 0
+        for i in range(1, m+1):
+            cnt += min(n, x//i)
+            if cnt >= k: return True
+        return False
+
+    i, j = 1, m * n; ans = 0
+    while i <= j:
+        mid = (i+j) >> 1
+        if at_least_k(mid):
+            j -= 1; ans = mid
+        else:
+            i += 1
+    return ans
+```
+:::
+```
+  #### 3 x 3 乘法表 #####
+        1   2   3
+        2   4   6
+        3   6   9
+```
+:::::
+
+::::: tab 最慢吃香蕉
+## 875. Koko Eating Bananas
+**问题**： 有 $N$ 堆香蕉, 第 $i$ 堆中有 `piles[i]` 根香蕉, 警卫已经离开了，将在 $H$ 小时后回来。 返回可以在警卫回来前吃掉所有香蕉的最小速度 $K$ (这样可以慢慢吃), 一个小时只能吃一堆香蕉且香蕉数目不能多于 $K$
+
+**例子**：`piles = [3,6,7,11], H = 8`, 因为八小时后才回来, 如果每小时吃$K=4$颗, 那么吃掉所花时间=`sum[1,2,2,3] = 8`
+
+::: details
+这里注意`can_finish`函数中, 怎么确定一堆香蕉多少小时吃完, 比如说`pile=10`, `x=10`和`x=9`都是花费1个小时, 这个整除部分需要注意一下, 注意在二分法里`i, j`都是单向移动, 不存在`j`跳过了的情况
+```python
+def minEatingSpeed(self, piles: List[int], H: int) -> int:
+
+    def can_finish(x):
+        hours = 0
+        for pile in piles:
+            hours += (pile-1)//x + 1
+            if hours > H: return False
+        return True
+
+    i, j = 1, sum(piles); ans = 0
+    while i <= j:
+        mid = (i+j) >> 1
+        if can_finish(mid):
+            j = mid - 1; ans = mid
+        else:
+            i = mid + 1
+    return ans
+```
+:::
+![875. Koko Eating Bananas](~@assets/lc-875.png#center)
+:::::
+
+::::: tab 最快摘花
+## 1482. Minimum Number of Days to Make m Bouquets
+**问题**： 返回从花园中摘 $m$ 束花需要等待的最少的天数(如果不能完成返回-1), 有一个数组`bloomDay`, 第 $i$ 朵花会在`bloomDay[i]`盛开。 注意每一束花需要从 $k$ 束盛开且相邻的花中选择
+
+::: details
+没什么好说的，和前面几道一模一样, 在`mid`天下，看盛开的花朵能不能凑够`m`束
+```python
+def minDays(self, bloomDay: List[int], m: int, k: int) -> int:
+    if m*k > len(bloomDay):
+        return -1
+    def can_finish(days):
+        cnt = 0; total = 0
+        for d in bloomDay:
+            if d > days:  cnt = 0
+            else:         cnt += 1
+            if cnt == k:  
+                cnt = 0; total += 1
+            if total >= m: 
+                return True
+        return False
+
+    i, j = 1, int(1e9); ans = -1
+    while i <= j:
+        mid = (i+j) >> 1
+        if can_finish(mid):
+            j = mid - 1; ans = mid
+        else:
+            i = mid + 1
+    return ans
+```
+:::
+```
+假设要求 m=2 束花, 每束花需要相邻的 k=3 朵花
+
+  #### 花第几天盛开 = [7,7,7,7,12,7,7] #### 
+
+  第 7  天花朵盛开情况 [*,*,*,*, x,*,*] 假设 k = 3, 那么前三朵可以构成一束
+
+  第 12 天花朵盛开情况 [0,0,0,*,*,*,*] 这个时候任意三朵相邻的都可以, 所以最少12天可以完成任务
+```
+:::::
+
+::::: tab 磁力最大
+## 1552. Magnetic Force Between Two Balls
+**问题**：把`m`个磁球放到`n`个篮子, 第`i`个篮子的位置在`position[i]`, 怎么放可以让相互之间最小磁力最大, 磁力的定义是`f(a,b) = |pos[a] - pos[b]|`
+
+**例子**：例如`position = [1,2,3,4,7]`, `m=3`, 最佳方案是把3个球放到`[1,4,7]`, 两两之间的磁力为`[3,3,6]`, 最小磁力为3, 其他方案最小磁力都小于3
+
+::: details
+这个地方要注意 1) 排序, 否则不好求`can_fit`; 2) 我们要的是符合`can_fit`的最大`mid`
+```python
+def maxDistance(self, position: List[int], m: int) -> int:
+
+    def can_fit(force):
+        pre, ball = position[0], 1
+        for pos in position[1:]:
+            if abs(pos - pre) >= force:
+                ball += 1; pre = pos
+            if ball >= m: 
+                return True
+        return False
+
+    position.sort(); ans = 0
+    i, j = 1, position[-1]-position[0]
+    while i <= j:
+        mid = (i+j) >> 1
+        if can_fit(mid):
+            i = mid + 1; ans = mid
+        else:
+            j = mid - 1
+    return ans
+```
+::: 
+![1552. Magnetic Force Between Two Balls](~@assets/lc-1552.png#center)
+:::::
+::::::
+
+---
 
 ## 496. Next Greater Element III
 
