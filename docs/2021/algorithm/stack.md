@@ -172,12 +172,15 @@ def findKthLargest(self, nums, k) -> int:
 
 </center>
 
-## 括号问题
+<big>括号问题</big>
 
-__问题__： 这种题目有很多变式, 相关的题目有`32, 最长有效括号`, `20, 判断括号是否有效` 等等
+::: right
+💥 数有效的括号 + 利用栈先进后出的特点 + 还没总结完
+:::
 
 ::::::: tabs type: card
-:::::: tab 32. Longest Valid Parentheses
+:::::: tab 最长有效括号
+## 32. Longest Valid Parentheses
 __例子__： ")()())"的最长有效括号子串的是"()()", 长度为4
 ::::: tabs type: card
 :::: tab 栈
@@ -225,7 +228,8 @@ def longestValidParentheses(self, s: str) -> int:
 ::::
 :::::
 ::::::
-:::::: tab 20. valid parenthesis
+:::::: tab 括号是否有效
+## 20. valid parenthesis
 __例子__： "}})({{" 是无效括号, "{({})}" 是有效括号
 ::::: details
 ```python                            
@@ -246,15 +250,18 @@ def isValid(self, s: str) -> bool:
 ![有效括号](~@assets/lc-32.png#center)
 :::::::
 
-## 保持顺序问题
+<big> 寻找子序并保存原来顺序 </big>
 
-__问题__： 像是`1673. 找出最具竞争力的子序列`这样的, 要求找出子序列, 但是子序列元素的先后次序不能改变
+::: right
+💥 子序列但维持原来次序 + 维持一个单调栈 + 保留多少 && 删除多少
+:::
 
 ::::::: tabs type: card
 ::: right
 凡是涉及删减, 但又必须保持原来先后次序的, 考虑使用单调栈
 :::
-:::::: tab 1673. Competitive
+:::::: tab 竞争力子序列
+## 1673. Find the Most Competitive Subsequence
 __例子__： `nums = [3,5,2,6], k = 2`, 中长度为2的最有竞争力子序不是`[2,3]`而是`[2,6]`因为3在2的前面
 ::: details
 ```python
@@ -269,7 +276,8 @@ def mostCompetitive(self, nums: List[int], k: int) -> List[int]:
 ```
 :::
 ::::::
-:::::: tab 402. Remove K Digits
+:::::: tab 移除K个数字
+## 402. Remove K Digits
 __例子__： `nums = "1432219", k = 3`, 中去掉3个数, 得到最大子串`1219`而不是`1122`, 后者打破了原来元素之间的先后顺序
 :::: details
 ::: danger 同上面不太一样的是这里要考虑`leading zero`的问题
@@ -286,7 +294,8 @@ def removeKdigits(self, num: str, k: int) -> str:
 :::
 ::::
 ::::::
-:::::: tab 1081. Smallest Distinct
+:::::: tab 最小非重复子序
+## 1081. Smallest Subsequence of Distinct Characters
 __例子__： `s = "cbacdcbc"`, 最小非重复子序列是`acdb`, 而不是`abcd`, 因为`a`后面先有`c`,`d`才有`b`
 :::: details
 ::: danger 同上面不太一样的是这里要求所有字母都得有, 且只保留第一个出现的这个字母, 次数统计的意义是避免过度删除某个字母, 导致后面不会再出现了
@@ -305,9 +314,87 @@ def smallestSubsequence(self, s: str) -> str:
 :::
 ::::
 ::::::
-:::::: tab 316. Max-Number
+:::::: tab 移除重复字母
+## 316. Remove Duplicate Letters 
 __例子__： `nums1 = [3, 4, 6, 5], nums2 = [9, 1, 2, 5, 8, 3], k = 5`, 拼接后最大的数(长度为5)是`[9,8,6,5,3]`
 - 难点在于怎么确定从`nums1`取多少个, 从`nums2`取多少个, 使得加起来等于`k`, 只想到了暴力解法, k1=0,1,2,3,4,5, k2=5-k1, 然后分别取, 最后合并
 ::::::
 ::::::: 
 
+<big> 优先级队列 </big>
+::: right
+💥 生成`heap` + 初始化`max`和`min` + `pop min & update max`
+:::
+
+::::: tabs type: card
+:::: tab 最小重叠区间
+## 632. Smallest Range Covering Elements from K Lists
+
+__例子__： 
+```
+nums = [ [4,10,15,24,26], 
+         [0,9,12,20], 
+         [5,18,22,30]
+       ]
+```
+输出：[20,24], 最小重叠区间, 因为第一个的`24`在区间内, 第二个的`20`在区间内, 第三个的`22`在区间内
+::: details
+如下图所描述的那样, 维持一个三个元素的`min-heap`, 每次求这三个元素的最大最小值的差
+```python
+def smallestRange(self, nums: List[List[int]]) -> List[int]:
+    left, right = -10**9, 10**9
+    maxValue = max(x[0] for x in nums); size = [len(x) for x in nums]
+    heap = [(x[0], i, 0) for i,x in enumerate(nums)]
+    heapq.heapify(heap)
+    while True:
+        minValue, row, idx = heapq.heappop(heap)
+        if maxValue - minValue < right - left:
+            left, right = minValue, maxValue
+        if idx == size[row] - 1:
+            return [left, right]
+        else:
+            new_add = nums[row][idx+1]
+            maxValue = max(maxValue, new_add)
+            heapq.heappush(heap, (new_add, row, idx+1))
+```
+:::
+![632. Smallest Range Covering Elements from K Lists](~@assets/lc-632.png#center)
+::::
+:::: tab 数组最小偏移
+## 1675. Minimize Deviation in Array
+
+__例子__： `nums = [4,1,5,20,3]`里面每一个奇数可以乘以2变成偶数, 每一个偶数可以不断除以2直到成为一个奇数, 这样我们可以把`nums`变成`nums' = [2,2,5,5,3]`这样的偏移量最小, 为最大减去最小等于`5-2=3`
+
+我们先生成下面这个东西
+```
+array = [ [1,2,4],
+          [1,2],
+          [5,10],
+          [5,10,20],
+          [3,6]
+        ]
+```
+接下来就跟前面`632`一模一样, 寻找这里面的最小重叠区间`[2,5]`, 这两个的差值就是答案
+::: details
+当然这里可以直接从最后一个偶数开始往前看, 每次只需要除以二即可
+1. 如果本来就是偶数保存, 如果是奇数乘以二(==只能乘一次, 因为偶数只能往下除==)
+2. 更新`heap`的最大最小值(重要!)
+```python
+def minimumDeviation(self, nums: List[int]) -> int:
+    max_heap = [-x if x&1==0 else -2*x for x in nums]
+    heapq.heapify(max_heap)
+    res, minValue = float('inf'), -max(max_heap)
+    while True:
+        maxValue = -heapq.heappop(max_heap)
+        res = min(res, maxValue - minValue)
+        if maxValue & 1 == 1:
+            return res
+        else:
+            new_add = maxValue>>1
+            minValue = min(minValue, new_add)
+            heapq.heappush(max_heap, -new_add)
+    return -1
+```
+:::
+::::
+:::::

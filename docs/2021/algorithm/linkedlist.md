@@ -75,3 +75,31 @@ def oddEvenList(self, head: ListNode) -> ListNode:
 :::
 
 ![147. Insertion Sort List](~@assets/lc-147.gif#center)
+
+
+<big>判断有环</big>
+::: right
+🌈 判断链表中是否有环
+:::
+
+::::: tabs type: card
+:::: tab 环形链表
+## 141. Linked List Cycle
+**问题**： 如果链表中存在环, 则返回 true, 否则, 返回 false 
+::: details
+快慢指针搞定, 注意两个特殊情况 `[1]`和`[]`
+```python
+    def hasCycle(self, head: ListNode) -> bool:
+        if not head or not head.next:
+            return False
+        slow = head; fast = head.next
+        while slow != fast:
+            if not fast or not fast.next:
+                return False
+            slow = slow.next; fast = fast.next.next
+        return True
+```
+:::
+![141. Linked List Cycle](~@assets/lc-141.png#center)
+::::
+:::::

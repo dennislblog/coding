@@ -7,50 +7,140 @@ tags:
    - Leetcode
 ---
 
-## 1345. Jump Game IV
-> Input: arr = [100,-23,-23,404,100,23,23,23,3,404]
-
-> Output: 3 最短跳三下从起点到终点
-
-每一步，你可以从下标 i 跳到下标：
-1. i + 1 满足：i + 1 < arr.length
-2. i - 1 满足：i - 1 >= 0
-3. j 满足：arr[i] == arr[j] 且 i != j
-
-**问题**：返回到达数组最后一个元素的下标处所需的 最少操作次数 。
-::: details
-因为可以跳跃(相同数字)，因此第一时间想到用图 + 广度搜索来做
-```python                            
-# 右边相对于左边优化了两点： 1）访问过的节点从 m_ 中释放内存(因为不可能再访问)； 2） 对于每一个数字，不保存连续出现的index(除非首尾)
-                                                                                                                                
-class Solution:                                            |   class Solution:
-    def minJumps(self, arr: List[int]) -> int:             |       def minJumps(self, arr: List[int]) -> int:
-        m_, n = collections.defaultdict(set), len(arr)     |           m_, n = collections.defaultdict(list), len(arr)
-        res = 0                                            |           res = 0 
-        for i, a in enumerate(arr):                        |           for i, a in enumerate(arr):
-            m_[a].add(i)                                   |               if len(m_[a]) > 1 and m_[a][-1] + 1 == i:
-        q = collections.deque([0]); visited = [0]*n        |                   m_[a].pop()
-        while q:                                           |               m_[a].append(i)
-            size = len(q)                                  |           q = collections.deque([0]); visited = [0] * n
-            for _ in range(size):                          |           while q:
-                cur = q.popleft()                          |               size = len(q)
-                if cur == n - 1: return res                |               for _ in range(size):
-                                                           |                   cur = q.popleft()
-                set_ = m_[arr[cur]]                        |                   if cur == n - 1: return res
-                if cur + 1 < n: set_.add(cur+1)            |                   lst = m_[arr[cur]]
-                if cur - 1>= 0: set_.add(cur-1)            |                   if cur + 1 < n: lst.append(cur+1)
-                for ncur in set_:                          |                   if cur - 1>= 0: lst.append(cur-1)
-                    if not visited[ncur]:                  |                   for ncur in lst:
-                        visited[ncur] = 1                  |                       if not visited[ncur]:
-                        q.append(ncur)                     |                           visited[ncur] = 1
-            res += 1                                       |                           q.append(ncur)
-        return -1                                          |                   m_[cur] = []
-
-                                                           |               res += 1
-```
+<big>跳跃游戏</big>
+::: right
+🎙️ 把所有跳跃游戏总结到一起
 :::
 
+::::: tabs type: card
+:::: tab 55. I
+## 55. Jump Game I
+**问题**: 每个元素的值代表你能跳的最大长度, 例如`input=[2,3,1,1,4]`, ==问你能不能从第一个跳到最后一个位置==
+::: details
+贪婪算法： 统计当前能够走到的最远的地方, 如果最远的地方到不了`current index`, 说明到不了当前这个位置, 自然也就到不了最后一个位置
+```python
+def canJump(self, nums: List[int]) -> bool:
+    reach = 0; n = len(nums)
+    for i, num in enumerate(nums):
+        if reach < i:
+            return False
+        reach = max(reach, i+num)
+        if reach >= n - 1:
+            return True
+    return True
+```
+:::
+![45. Jump Game II](~@assets/lc-45.png#center)
+::::
+:::: tab 45. II
+## 45. Jump Game II
+**问题**: 每个元素的值代表你能跳的最大长度, 例如`input=[2,3,1,1,4]`, ==问你最短几步可以从第一个跳到最后一个==
+::: details 贪心法
+在确定当前这一步的时候, 看未来哪一步能跳的最远, 
+1. 使用一个`cur`代表当前能到达的最远位置
+2. 使用`pre`表示上一次能到达的最远位置
+3. 从还没检查过的节点开始, 一直到`pre`, 更新当前能达到的最远距离, 更新`cur`
+4. 如果当前位置`cur >= n-1`代表能够到达最后一个位置了
+```python
+def jump(self, nums: List[int]) -> int:
+    pre, cur = 0, 0
+    N, step = len(nums), 0; i = 0
+    while cur < N - 1:
+        pre = cur
+        while i <= pre:
+            cur = max(cur, nums[i] + i)
+            i += 1
+        step += 1
+    return step
+```
+:::
+::: details BFS法
+用一个`queue`去存上面那个`while loop`里的数, 跟前面那个做法基本一模一样, 注意`pre`和`cur`的范围
+```python
+def jump(self, nums: List[int]) -> int:
+    q = collections.deque([0])
+    pre, cur, N, step = 0, 0, len(nums), 0
+    while q:
+        for _ in range(len(q)):
+            i = q.popleft()
+            if i >= N-1: return step
+            cur = max(cur, nums[i] + i)
+            for i in range(pre+1, cur+1):
+                q.append(i)
+            pre = cur
+        step += 1
+    return step
+```
+:::
+![45. Jump Game II](~@assets/lc-45.png#center)
+::::
+:::: tab 1306. III
+## 1306. Jump Game III
+**问题**: ==这次只能跳到`i-arr[i]`或者`i+arr[i]`两个位置==, 给定 `input=[2,0,3,1,1,4]` 和起始位置 `input=5`, ==问你从下标为5的地方开始, 能否跳到任意一个元素值为0的地方==
+::: details
+```python
+
+```
+:::
+::::
+:::: tab 1345. IV
+## 1345. Jump Game IV
+**问题**: ==这一次你只能跳到元素值相同的其他地方去==, 要么就只能**移动一格**到别的数字上去, 给定 `arr = [100,-23,-23,404,100,23,23,23,3,404]`, 问你从开头跳到结尾最短几步
+::: details
+和上面那道题类似, 就是把这一步能到的全部存起来, 但这样会因为一个连续为7的超时, 这个时候其实只用保存头一个和最后一个7即可, 因为其他的只是添加一样的东西到`set`里
+```python
+def minJumps(self, arr: List[int]) -> int:
+    same = collections.defaultdict(list)
+    for i, a in enumerate(arr):
+        if len(same[a]) > 1 and same[a][-1] + 1 == i:
+            same[a].pop()
+        same[a].append(i)
+    q = collections.deque([0]); visited = [False] * N
+    step, N = 0, len(arr)
+    while q:
+        for i in range(len(q)):
+            cur = q.popleft(); visited[cur] = True
+            if cur >= N-1: return step
+            lst = same[arr[cur]]; lst.append(cur-1); lst.append(cur+1)
+            for ncur in lst:
+                if 0 <= ncur < N and not visited[ncur]:
+                    q.append(ncur)
+        step += 1
+    return step
+```
+:::
 ![1345. Jump Game](~@assets/lc-1345.png#center)
+::::
+:::: tab 1340. V
+## 1340. Jump Game V
+**问题**: 题目描述整个变了, 这次你可以选择从数组任意位置开始, 但每次移动只能往数值变小的方向, 问你最多可以访问多少个不同的元素(且每次最多只能跳$d$个单位)
+
+```
+arr = [6,4,14,6,8,13,9,7,10,6,12], d = 2
+```
+::: details
+这道题用动态规划作, 根据题意，只能往低了跳，且中间不能遇到比我高的
+- `dp[i]`代表从`i`开始跳, 最多可以跳过的台阶数
+- 状态转移`dp[i] = max(dp[i], 1+dp[j])`, 一旦有邻近阶梯比`i`高, 停止更新
+- 这里特别需要注意的是：要保证DP是从小到大更新(==按顺序更新==), 不然像`[7,6,5,4,3,2,1]`这样的, 不应该从左往右更新
+```python
+def maxJumps(self, arr: List[int], d: int) -> int:
+    N = len(arr); dp = [1] * N
+    sorted_arr = [(arr[i], i) for i in range(N)]; sorted_arr.sort()
+    for _, i in sorted_arr:
+        j = i + 1
+        while j < N and j <= i+d and arr[j] < arr[i]:
+            dp[i] = max(dp[i], 1 + dp[j]); j += 1
+        j = i - 1
+        while j >= 0 and j >= i-d and arr[j] < arr[i]:
+            dp[i] = max(dp[i], 1 + dp[j]); j -= 1
+    print(dp)
+    return max(dp)
+```
+:::
+![1340. Jump Game V](~@assets/lc-1340.png#center)
+::::
+:::::
 
 ## 987. Vertical Order Traversal of a Binary Tree
 **问题**: 一个二叉树, 从左到右竖着看, 每列的结果放到一起, 那么结果是什么样的
@@ -115,47 +205,53 @@ def verticalTraversal(self, root: TreeNode) -> List[List[int]]:
 
 ![987. Vertical Order Traversal of a Binary Tree](~@assets/lc-987.png#center)
 
-## 98. Validate Binary Search Tree 
-**问题**：判断一棵树是不是BST
+<big>二叉树排序问题</big>
+::: right
+🎙️ 记住二叉树每个节点都提供了一个上界/下界
+:::
+
 ::::: tabs type: card
-:::: tab 递归
-要求 左子树最大值 < cur.val < 右子树最小值
+:::: tab 是否二叉树
+## 98. Validate Binary Search Tree
+**问题**：判断一棵树是不是BST
+
 ::: details
+要求 左子树最大值 < cur.val < 右子树最小值, 我们也可以用中序遍历看是否严格升序来判断, ==因为二叉树的中序遍历一定是有序的==
 ```python                            
-class Solution:
-    def isValidBST(self, root: TreeNode) -> bool:
-        
-        def helper(root, min_, max_):
-            if not root: return True
-            if root.val <= min_ or root.val >= max_:
-                return False
-            return helper(root.left, min_, root.val) and helper(root.right, root.val, max_)
-        
-        return helper(root, float('-inf'), float('inf'))
+def isValidBST(self, root: TreeNode) -> bool:
+    
+    def helper(root, min_, max_):
+        if not root: return True
+        if root.val <= min_ or root.val >= max_:
+            return False
+        return helper(root.left, min_, root.val) and helper(root.right, root.val, max_)
+    
+    return helper(root, float('-inf'), float('inf'))
 ```
 :::
+![98. Validate Binary Search Tree](~@assets/lc-98.png#center)
 ::::
-:::: tab 中序
-如果不是一直升序, 返回`False`
+:::: tab 截取二叉树
+## 698. Trim a Binary Search Tree
+给定一个二叉搜索树，同时给定 `[L,R]`, 要求保留二叉树中节点值在`[L,R]`的
+
 ::: details
+如果`node.val > R`, 返回`f(node.left)`, 如果`node.val < L`, 返回`f(node.right)`, 否则保留这个节点, 然后子节点继续
 ```python
-class Solution:
-    def isValidBST(self, root: TreeNode) -> bool:
-        self.prev = float('-inf')
-        def inorder(root):
-            if not root:                 return True
-            if not inorder(root.left):   return False
-            if self.prev >= root.val:     return False
-            self.prev = root.val
-            if not inorder(root.right):  return False
-            return True
-        return inorder(root)
+def trimBST(self, root: TreeNode, low: int, high: int) -> TreeNode:
+    if not root: return None
+    if root.val < low:    return self.trimBST(root.right, low, high)
+    elif root.val > high: return self.trimBST(root.left, low,high) 
+    else:
+        root.left  = self.trimBST(root.left, low, high)
+        root.right = self.trimBST(root.right, low, high)
+        return root
 ```
 :::
+![698. Trim a Binary Search Tree](~@assets/lc-698.png#center)
 ::::
 :::::
 
-![98. Validate Binary Search Tree](~@assets/lc-98.png#center)
 
 ## 173. Binary Search Tree Iterator
 **问题**：写一个中序遍历的迭代器, 要求存储空间不得超过 log(n) 平摊访问时间不超过 O(1)
@@ -208,10 +304,15 @@ class Solution(object):
 ```
 :::
 
-
 ![865. Smallest Subtree with all the Deepest Nodes](~@assets/lc-865.png#center)
 
 
+<big>回溯法</big>
+::: right
+🎙️ 假设前面都是符合要求的(`放在tmp里`), 最后几个位置怎么放
+:::
+::::: tabs type: card
+:::: tab 分割回文串
 ## 131. Palindrome Partitioning
 
 **问题**： 给定一个字符串，找出 **所有可能** 回文子字符串。 
@@ -237,9 +338,9 @@ class Solution:
         return res
 ```
 :::
-
 ![131. Palindrome Partitioning](~@assets/lc-131.png#center)
-
+::::
+:::: tab 优美的排列
 ## 526. Beautiful Arrangement
 
 **问题**： 给定一个数`n`, 你从 `1,2...,n`的所有`permutation`中找出一共有多少种优美排列
@@ -267,6 +368,7 @@ class Solution:
         return self.res
 ```
 :::
+:::::
 
 ## 127. Word Ladder
 

@@ -7,7 +7,12 @@ tags:
    - Leetcode
 ---
 
-__二分法__： 通过预估一个可能的值, 看是否能做出来, 然后不断缩小范围, 如果不符合就增大
+
+<big> 二分法 </big>
+
+::: right
+⚙️ 预估值看能不能做出来 + 二分缩小范围
+:::
 
 :::::: tabs type: card
 ::::: tab 最不费力
@@ -250,35 +255,68 @@ def maxDistance(self, position: List[int], m: int) -> int:
 
 ---
 
+<big> 下一个排列 </big>
+::::: tabs type: card
+:::: tab 496
 ## 496. Next Greater Element III
 
-**问题**： 找到刚好比 `n` 大的 `permutation` 如果没有(比如987654)则返回 -1
-
-**例子**： 比如 `n = 123` 输出 `132`
+**问题**： 给定`n=123`, 返回第一个比他大的排列, 即`n'=132`
 ::: details
-翻转的技巧，从后往前找到第一个拐点(比如图中的`4`), 然后翻转后面得到以`4`开头最小的数字, 然后用里面刚好比`4`大的数字(比如这里的`6`)去替换
+看下面这图就明白了, 先从后往前找到一个升序, 然后和后面第一个比这个值大的调换, 然后后面翻转, ==注意`n=321`要返回`-1`而不是像31题那种返回下一种排列==
 ```python                            
 def nextGreaterElement(self, n: int) -> int:
     
     def reverse(l, r):
         while l < r:
-            num[l], num[r] = num[r], num[l]
+            nums[l], nums[r] = nums[r], nums[l]
             l += 1
             r -= 1
-    
-    num = list(str(n)); i = j = len(num) - 1
-    while i > 0 and num[i-1] >= num[i]:
+
+    nums = list(str(n)); n = len(nums); i = n-1
+    while i > 0 and nums[i-1] >= nums[i]:
         i -= 1
     if i == 0: return -1
-    reverse(i, j)
-    for k in range(i, j+1):
-        if num[k] > num[i-1]:
-            num[k], num[i-1] = num[i-1], num[k]
-            break
-    res = int(''.join(num))
+    j = n - 1
+    while j >= i and nums[i-1] >= nums[j]:
+        j -= 1
+    nums[i-1], nums[j] = nums[j], nums[i-1]
+    reverse(i, n-1)
+    res = int(''.join(nums))
     return res if 1 <= res <= 2**31 - 1 else -1
 ```
 :::
+::::
+:::: tab 31
+## 31. Next Permutation
+
+**问题**： 找到刚好比 `n` 大的 `permutation`. 比如 `n = 123` 输出 `132`, `n=321` 输出`123`
+::: details
+看下面这图就明白了, 先从后往前找到一个升序, 然后和后面第一个比这个值大的调换, 然后后面翻转
+```python                            
+def nextPermutation(self, nums: List[int]) -> None:
+
+    def reverse(l, r):
+        while l < r:
+            nums[l], nums[r] = nums[r], nums[l]
+            l += 1
+            r -= 1
+
+    n = len(nums); i = n - 1
+    while i > 0 and nums[i-1] >= nums[i]:
+        i -= 1
+    if i - 1 >= 0:
+        j = n - 1
+        while j >= i and nums[i-1] >= nums[j]:
+            j -= 1
+        nums[i-1], nums[j] = nums[j], nums[i-1]
+    reverse(i, n-1)
+```
+:::
+::::
+:::::
+
+
+
 
 ![496. Next Greater Element III](~@assets/lc-496.png#center)
 
@@ -408,6 +446,13 @@ def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
 
 ![88. Merge Sorted Array](~@assets/lc-88.gif#center)
 
+<big>两头夹逼</big>
+::: right
+⚙️ 排序 + 双指针从两头往中间搜索
+:::
+
+::::: tabs type: card
+:::: tab 船救人
 ## 881. Boats to Save People
 
 **问题**： 一条船**最多**坐两个人，同时船有个载重，问最少需要`多少条船`才能装下所有人。 
@@ -427,6 +472,8 @@ def numRescueBoats(self, people: List[int], limit: int) -> int:
     return res
 ```
 :::
+::::
+:::::
 
 ## 1658. Minimum Operations to Reduce X to Zero
 
