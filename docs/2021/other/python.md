@@ -235,7 +235,7 @@ clear/disable/enable number      这个number就是断点的ID, 用`b`查询
 ::::
 :::::
 
-
+!!!include(./python/sympy.md)!!!
 
 
 
