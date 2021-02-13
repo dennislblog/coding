@@ -250,36 +250,26 @@ def trimBST(self, root: TreeNode, low: int, high: int) -> TreeNode:
 :::
 ![698. Trim a Binary Search Tree](~@assets/lc-698.png#center)
 ::::
-:::::
+:::: tab 二叉树累加
+## 538. Convert BST to Greater Tree
+把BST的每个节点的值重新设置为所有比它值大的节点的值的和。
 
-
-## 173. Binary Search Tree Iterator
-**问题**：写一个中序遍历的迭代器, 要求存储空间不得超过 log(n) 平摊访问时间不超过 O(1)
 ::: details
-最简单的方法是一次性按`inorder`逆向压入所有节点, 但这样存储空间是O(n)，不符合要求。 均摊的思想就是每pop一个左子节点，把这个节点右子树的所有左边节点压入栈中
-```python                            
-class BSTIterator:
-
-    def __init__(self, root: TreeNode):
-        self.stack = [] #max size = height of the tree
-        self.addleft(root)
-
-    def addleft(self, root: TreeNode):
-        while root:
-            self.stack.append(root)
-            root = root.left
-        
-    def next(self) -> int:
-        out = self.stack.pop()
-        self.addleft(out.right)
-        return out.val
-
-    def hasNext(self) -> bool:
-        return bool(self.stack)
+```python
+def convertBST(self, root: TreeNode) -> TreeNode:
+    self.sum = 0
+    def helper(root):
+        if not root: return None
+        helper(root.right)
+        self.sum += root.val; root.val = self.sum
+        helper(root.left)
+    helper(root)
+    return root
 ```
 :::
-
-![173. Binary Search Tree Iterator](~@assets/lc-173.png#center)
+![538. Convert BST to Greater Tree](~@assets/lc-538.png#center)
+::::
+:::::
 
 
 ## 865. Smallest Subtree with all the Deepest Nodes

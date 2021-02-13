@@ -103,3 +103,59 @@ def oddEvenList(self, head: ListNode) -> ListNode:
 ![141. Linked List Cycle](~@assets/lc-141.png#center)
 ::::
 :::::
+
+
+## 138. Copy List with Random Pointer 
+
+**问题**：复制一个复杂链表，这个复杂链表是指出了`value`和`next`指针外，还有一个`random`指针可能指向任何位置的链表节点或空
+
+:::: tabs type: card
+::: tab HashMap存储
+- 第一遍只复制节点的`val`, `random, next`暂时为空，并将源节点和克隆节点形成映射存放在一个字典里
+- 第二遍从
+```python
+def copyRandomList(self, head: 'Node') -> 'Node':
+    if not head: return None
+    m_ = {None: None}; cur = head
+    while cur:
+        m_[cur] = Node(cur.val)
+        cur = cur.next
+    cur = head
+    while cur:
+        m_[cur].next = m_[cur.next]
+        m_[cur].random = m_[cur.random]
+        cur = cur.next
+    return m_[head]
+```
+:::
+::: tab 不需要额外存储
+1. 复制源节点
+2. 生成克隆节点的随机指针
+3. 将原链表和克隆链表分离
+```python
+def copyRandomList(self, head: 'Node') -> 'Node':
+    # 先生成1->1'->2->2'->4->4'这样子
+    p = head
+    while p:
+        tmp = Node(p.val)
+        p.next, tmp.next = tmp, p.next
+        p = tmp.next
+    # 复制random
+    p = head
+    while p:
+        if p.random:
+            p.next.random = p.random.next
+        p = p.next.next
+    # 分裂成两个链表
+    dummy = Node(-1)
+    origin = dummy; clone = head
+    while clone:
+        origin.next = clone.next
+        clone.next = clone.next.next
+        origin, clone = origin.next, clone.next
+    return dummy.next
+```
+:::
+::::
+
+![138. Copy List with Random Pointer ](~@assets/lc-138.png#center)

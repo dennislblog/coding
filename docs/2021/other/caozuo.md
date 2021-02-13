@@ -49,8 +49,8 @@ jupyter lab clean; jupyter lab build
 ```
 但是他给我报错, 好像是[webpack](https://github.com/jupyterlab/jupyterlab/issues/9533)的问题, 于是更新jupyterlab到`3.0.6`
 ```python
-# 更新jupyter lab, 也可以用pip
-conda update -c conda-forge jupyterlab
+# 更新jupyter lab
+pip install --upgrade jupyterlab
 jupyter labextension install jupyterlab-plotly
 # 现在可以运行plotly了
 import plotly.express as px
