@@ -257,10 +257,10 @@ def longestValidParentheses(self, s: str) -> int:
 ::::
 :::::
 ::::::
-:::::: tab 括号是否有效
+:::: tab 括号是否有效
 ## 20. valid parenthesis
 __例子__： "}})({{" 是无效括号, "{({})}" 是有效括号
-::::: details
+::: details
 ```python                            
 def isValid(self, s: str) -> bool:
     m_ = {")": "(", "]": "[", "}": "{"}
@@ -274,8 +274,32 @@ def isValid(self, s: str) -> bool:
                 stack.append(x)
     return not stack
 ```
-:::::
-::::::
+:::
+::::
+:::: tab 括号得分
+## 856. Score of Parentheses
+__例子__： "(()(()))"
+- () 得 1 分
+- ()() 得 2 分
+- (()()) 得 (1+1) * 2 分
+::: details
+如果遇到`(`就往栈里面添加, 如果遇到`)`就一直往前搜索直到栈顶元素为`(`, 把数字加起来乘以2
+```python
+def scoreOfParentheses(self, S: str) -> int:
+    stack = []
+    for s in S:
+        if s == '(':
+            stack.append(s)
+        else:
+            total = 0
+            while stack and stack[-1] != '(':
+                total += stack.pop()
+            total = 1 if total == 0 else 2 * total 
+            stack.pop(); stack.append(total)
+    return sum(stack)
+```
+:::
+::::
 ![有效括号](~@assets/lc-32.png#center)
 :::::::
 

@@ -358,6 +358,31 @@ class Solution:
         return self.res
 ```
 :::
+::::
+:::: tab 字母大小排列
+## 784. Letter Case Permutation
+**问题**： 给定一个字符串S，通过将字符串S中的每个字母转变大小写，我们可以获得一个新的字符串。返回所有可能得到的字符串集合。
+::: details
+回溯法, 一开始我里面用到了循环, 这里不需要, 按顺序一个一个加进去就好, 注意大小写转换的问题
+```python
+def letterCasePermutation(self, S: str) -> List[str]:
+    def backtrack(tmp, ind):
+        if ind >= n: 
+            res.append(tmp[:]); return
+        cur = S[ind]
+        if cur.isalpha():
+            if cur == cur.upper():
+                backtrack(tmp+cur.lower(), ind+1)
+            else:
+                backtrack(tmp+cur.upper(), ind+1)
+        backtrack(tmp+cur, ind+1)
+    n = len(S); res = []
+    backtrack("", 0)
+    return res
+```
+:::
+![784. Letter Case Permutation](~@assets/lc-784.png#center)
+::::
 :::::
 
 ## 127. Word Ladder
@@ -457,5 +482,82 @@ def createSortedArray(self, instructions: List[int]) -> int:
 ```
 :::
 
-
 ![1649. Create Sorted Array through Instructions](~@assets/lc-1649.png#center)
+
+
+<big>二分法</big>
+::: right
+🎙️ 这就是个染色问题
+:::
+
+::::: tabs type: card
+:::: tab 二分图
+## 785. Is Graph Bipartite?
+
+__问题__： 设$G=(V,E)$是一个无向图, 是否可以把$V$分成两拨, 使得图中的每一边两端的节点分别属于不同的一拨, 
+
+__例子__： `graph = [[1,3],[0,2],[1,3],[0,2]]`, 分别代表四个顶点所连的节点, 比如$0$连接了$1$, 也连接了$3$, 所以`graph[0] = [1,3]`能得到节点$0$所连的另一端
+
+::: details
+用两种不同的颜色对不同顶点进行染色，相邻顶点染成相反的颜色。要注意不要重复访问某个节点, 因为这里只有两种颜色，所以不存在需要撤销操作的需要(不需要考虑是否有更好的涂色), 颜色加深的两行是精髓
+```python{5,22}
+def isBipartite(self, graph: List[List[int]]) -> bool:
+    n = len(graph)
+    color = [0] * n; q = collections.deque()
+    for i in range(n):   #可能节点不是都连在一起的, 所以要遍历所有节点
+        if color[i] != 0: continue
+        q.append(i); color[i] = 1
+        while q:
+            cur = q.popleft()
+            for ncur in graph[cur]:
+                if color[ncur] == color[cur]: return False
+                if color[ncur] == 0:
+                    q.append(ncur); color[ncur] = -color[cur]
+    return True
+
+"""上面是BFS作法, 如果用DFS的话"""
+def isBipartite(self, graph: List[List[int]]) -> bool:
+    def dfs(node, color):
+        if visited[node] != 0: 
+            return visited[node] == color
+        visited[node] = color
+        for nnode in graph[node]:
+            if not dfs(nnode, -color): return False
+        return True
+    n = len(graph); visited = [0] * n
+    for i in range(n):
+        if visited[i] == 0 and not dfs(i, 1):
+            return False
+    return True
+```
+:::
+![785. Is Graph Bipartite](~@assets/lc-785.png#center)
+::::
+:::: tab 是否二分
+## 886. Possible Bipartition
+
+__问题__： 要把喜欢彼此的人放到一组, 总共两个组
+
+__例子__： `N = 4, dislikes = [[1,2],[1,3],[2,4]]`, 代表有$4$个人, 其中$1$不喜欢$2,3$, $2$不喜欢$4$
+
+::: details 
+和前面那道题差不多, 只是这里我们要用`dislikes`来构建图(节点-节点), 然后就是同一条线的两端不能染同一个颜色
+```python
+def possibleBipartition(self, N: int, dislikes: List[List[int]]) -> bool:
+    m_ = collections.defaultdict(set)
+    color = [0] * (N+1); q = collections.deque()
+    for a, b in dislikes:
+        m_[a].add(b); m_[b].add(a)
+    for i in range(N):
+        if color[i] == 0:              color[i] = 1; q.append(i)
+        while q:
+            cur = q.popleft()
+            for ncur in m_[cur]:
+                if color[ncur] == 0:   color[ncur] = -color[cur]; q.append(ncur)
+                elif color[ncur] == color[cur]:   return False
+    return True
+```
+:::
+![785. Is Graph Bipartite](~@assets/lc-785.png#center)
+::::
+:::::

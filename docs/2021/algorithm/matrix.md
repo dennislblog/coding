@@ -125,6 +125,7 @@ def spiralMatrixIII(self, R: int, C: int, r0: int, c0: int):
 ::: details
 用一个堆存放对角线元素, 然后一个一个pop出来, 也可以用list-sort-pop
 > 对角线元素的$(i-j)$是一样的
+
 ```python
 def diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:
     lsts = collections.defaultdict(list)
@@ -140,3 +141,36 @@ def diagonalSort(self, mat: List[List[int]]) -> List[List[int]]:
 :::
 
 ![1329. Sort the Matrix Diagonally](~@assets/lc-1329.png#center)
+
+## 1091. Shortest Path in Binary Matrix 
+
+**问题**：从左上角到右下角, 中间`0`代表可以通过, `1`代表不能通过, ==方向可以允许↖, ↗, ↙, ↘ 这种==
+
+::: details
+典型的BFS的题, 当该节点没有被访问且在矩形内, 就可以扩展节点, 还可以用A*配合优先队列做, 但复杂度我觉得是一样的？
+
+```python
+def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
+    n = len(grid)
+    if grid[0][0] == 1 or grid[n-1][n-1] == 1:
+        return -1
+    if n== 1:
+        return 1
+    dirs = ((0,-1),(0,1),(-1,0),(1,0),(-1,-1),(1,-1),(-1,1),(1,1))
+    res = 1; q = collections.deque([(0,0)])
+    while q:
+        for _ in range(len(q)):
+            y, x = q.popleft()
+            for dx, dy in dirs:
+                nx, ny = x+dx, y+dy
+                if nx == n-1 and ny == n-1:
+                    return res + 1
+                elif 0 <= nx < n and 0 <= ny < n and grid[ny][nx]==0:
+                    grid[ny][nx] = -1
+                    q.append((ny, nx))
+        res += 1
+    return -1
+```
+:::
+
+![1091. Shortest Path in Binary Matrix](~@assets/lc-1091.png#center)

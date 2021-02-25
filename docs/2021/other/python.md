@@ -237,6 +237,64 @@ clear/disable/enable number      这个number就是断点的ID, 用`b`查询
 
 !!!include(./python/sympy.md)!!!
 
+## `Scipy` 基本用法
+
+::::: tip scipy.stats, scipy.optimize
+暂缺
+:::: tabs type: card
+::: tab 统计知识
+- 包含随机变量分布, 估算函数, 和一些统计检验函数
+- `beta.pdf(array, loc, scale)`地效果就是转换随机变量$Y=c+dX$, `cdf`同理, 注意我生成变量`beta.rvs()`的时候就是用的$\mu=5,\sigma=5$
+```python
+"""来自scipy.stats.beta"""
+obs = beta.rvs(5, 5, size=2000)
+grid = np.linspace(0.01, 0.99, 100)
+
+fig, ax = plt.subplots()
+ax.hist(obs, bins=40, density=True)
+dist = beta.fit(obs); plt.title(r'$\mu = {:.2f}$'.format(beta.mean(*dist)))
+ax.plot(grid, beta.pdf(grid, 5, 5), 'k-', linewidth=2, label='beta pdf')
+ax.plot(grid, beta.cdf(grid, 5, 5), 'b:', linewidth=2, label='beta cdf')
+```
+![scipy-stats](~@assets/python_scipy_1.png#center)
+
+- 除了用`fit`函数, 还有包括`linregress`这样的
+```python
+x = np.random.randn(200)
+y = 2 * x + 0.1 * np.random.randn(200)
+gradient, intercept, r_value, p_value, std_err = linregress(x, y)
+gradient, intercept   # => (2.0004, -0.0075)
+```
+:::
+::: tab 优化
+比如我们现在要解
+$$f(x) = \sin(4 (x - 1/4)) + x + x^{20} - 1, \quad x\in[0,1]$$
+- 二分法：就是从$0~100$中间猜数字, 对半猜
+- 牛顿-拉夫森：就是泰勒展开保留二次项的牛顿公式, $x = x_0 - f'(x_0)/f''(x_0)$, 但是这个方法好像只对单调函数有效, 比如这里凡是$x > 0.68$的都不会收敛到最优$ x^* = 0.41$
+- 其他：牛顿法快，但鲁棒性弱，二分法稳定，但相对慢，有的方法是兼顾两者, 比如`brentq`
+```python
+"""二分 scipy.optimize.bisect"""
+bisect(f, 0, 1) # => 0.40829
+"""牛顿 scipy.optimize.newton"""
+newton(f, 0.7)  # => 0.70017
+"""其他 scipy.optimize.brentq"""
+%timeit brentq(f, 0, 1)  
+>> 26.2 µs ± 899 ns per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+%timeit bisect(f, 0, 1)
+>> 104 µs ± 1.28 µs per loop (mean ± std. dev. of 7 runs, 10000 loops each)
+```
+- 找最小值, 可以用`fminbound`, 多变量用`minimize`, `fmin`, `fmin_powell`, `fmin_cg`, `fmin_bfgs`, and `fmin_ncg`; 带限制条件的可以使用`fmin_l_bfgs_b`, `fmin_tnc`, `fmin_cobyla`
+```python
+"""求最大值 scipy.optimize.fminbound 但是这个答案也不对呀, 又掉局部最大去了"""
+fminbound(lambda x: -f(x), 0, 1)  # => 0.70768
+"""求最大值 scipy.optimize.minimize 这个稳, 而且method可以指定方法"""
+minimize(lambda x: -f(x), (0.1,), bounds=((0,1),))['x'][0]  # => 1.0
+```
+![scipy-stats](~@assets/python_scipy_2.png#center)
+:::
+::::
+:::::
+
 
 
 
@@ -246,3 +304,5 @@ clear/disable/enable number      这个number就是断点的ID, 用`b`查询
 [1] [Cython 基本用法 @陈乐群](https://zhuanlan.zhihu.com/p/24311879)
 
 [2] [Ipdb 调试大法 @PegasusWang](https://zhuanlan.zhihu.com/p/36810978)
+
+[3] [SciPy 基本用法 @QuantEcon](https://python-programming.quantecon.org/scipy.html)

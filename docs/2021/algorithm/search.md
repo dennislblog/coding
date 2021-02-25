@@ -320,7 +320,13 @@ def nextPermutation(self, nums: List[int]) -> None:
 
 ![496. Next Greater Element III](~@assets/lc-496.png#center)
 
+<big> 排序题 </big>
+::: right
+⚙️ 先排序, 再线性搜索
+:::
 
+::::: tabs type: card
+:::: tab 最小范围
 ## 910. Smallest Range II
 
 **问题**： 在一个数列上，每一个元素`x`必须被`x+K`或者`x-K`。 问完成所有处理后, 最大值和最小值的差 最小是多少
@@ -339,8 +345,68 @@ def smallestRangeII(self, A: List[int], K: int) -> int:
     return res
 ```
 :::
-
 ![910. Smallest Range II](~@assets/lc-910.png#center)
+::::
+:::: tab 删除匹配
+## 524. Longest Word in Dictionary through Deleting
+
+**问题**： 从$d$中返回一个最长的匹配子字符串, 这个子字符串是$s$通过删除字符得到的
+
+::: details
+思路就是按长度降序、长度相同时字母表升序, 然后第一个能够匹配$s$删减子字符串的就是答案
+```python
+def findLongestWord(self, s: str, d: List[str]) -> str:
+    d.sort(key=lambda x: (-len(x), x)); ns = len(s)
+    for x in d:
+        jx, js = 0, 0; nx = len(x)
+        while jx < nx and js < ns:
+            if x[jx] == s[js]:
+                jx += 1; js += 1
+            else:
+                js += 1
+        if jx == nx: return x
+    return ""
+```
+:::
+![](~@assets/lc-524.png#center)
+:::: 
+:::: tab 最短排序
+## 581. Shortest Unsorted Continuous Subarray
+
+__问题__： 给你一个整数数组nums=$[2,6,4,8,10,9,15]$, 找出其中最短子序列的长度, 使得只要把这个子序列排好序, 这个数组就排好了序, 在这个例子里, 只需要把$[6,4,8,10,9]$排好, 就okay了, 因此答案是5
+
+::: details 贪心/排序法
+看排好序之后, 数组左边第一个差异和最后一个差异, 这一段就是需要被排序的子序列
+```python
+def findUnsortedSubarray(self, nums: List[int]) -> int:
+    sort = sorted(nums); n = len(nums)
+    i,j = 0, n - 1
+    while i < n and nums[i] == sort[i]: 
+        i += 1
+    while j >= i and nums[j] == sort[j]:
+        j -= 1
+    return j - i + 1
+```
+我们也可以用栈来找, 但有点多此一举, 用空间换那个整个排序的时间，左边找到第一个非升序, 用栈来找到他应该被放在的位置, 同理右边找到第一个非降序, 用栈来找到他应该被放在的位置
+```python
+def findUnsortedSubarray(self, nums: List[int]) -> int:
+    stack = []; n = len(nums)
+    l,r = n, 0
+    for i in range(n):
+        while stack and nums[stack[-1]] > nums[i]:
+            l = min(l, stack.pop())
+        stack.append(i)
+    stack = []
+    for i in range(n-1, l-1, -1):
+        while stack and nums[stack[-1]] < nums[i]:
+            r = max(r, stack.pop())
+        stack.append(i)
+    return r - l + 1 if r > l else 0  #特殊情况 [1,2,3,4] 这种情况l,r都不动
+```
+:::
+![](~@assets/lc-581.png#center)
+::::
+:::::
 
 
 ## 880. Decoded String at Index
@@ -472,6 +538,27 @@ def numRescueBoats(self, people: List[int], limit: int) -> int:
     return res
 ```
 :::
+::::
+:::: tab 盛水容器
+## 11. Container With Most Water
+__问题__： 图中垂直线代表输入数组`height = [1,8,6,2,5,4,8,3,7]`, 求容器最多能够容纳多少水
+
+::: details
+两头夹逼, 关键是把握什么时候移动`i`什么时候移动`j`, 当宽变小的时候, 高度我们寻求更大, 因此移动的是当前较矮的那一端
+```python
+def maxArea(self, height: List[int]) -> int:
+    i, j = 0, len(height)-1
+    dist, res = j-i, 0
+    while dist > 0:
+        h = min(height[i], height[j])
+        res = max(res, h * dist)
+        if height[i] < height[j]:       i += 1
+        else:                           j -= 1
+        dist -= 1
+    return res
+```
+:::
+![11. Container With Most Water](~@assets/lc-11.png#center)
 ::::
 :::::
 

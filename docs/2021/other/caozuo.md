@@ -31,6 +31,11 @@ python -m ipdb -c continue *.py
 import matplotlib.pyplot as plt
 plt.rcParams['figure.figsize'] = 10, 3
 ```
+## Python改变小数精度
+```python
+np.set_printoptions(precision = 4)
+# 或者直接 %precision 4
+```
 
 ## Jupyter自动补全
 Jupyter lab中的TAB键失去作用, [参考这里](https://stackoverflow.com/questions/44186370/kernel-taking-too-long-to-autocomplete-tab-in-jupyter-notebook)
@@ -56,4 +61,11 @@ jupyter labextension install jupyterlab-plotly
 import plotly.express as px
 fig = px.line(x=["a","b","c"], y=[1,3,2], title="sample figure")
 fig.show()
+```
+
+##IPython指令
+```python
+%precision 4        # sets printed precision for floats to 4 decimal places
+%whos               # gives a list of variables and their values
+%quickref           # gives a list of magics
 ```
