@@ -11,7 +11,7 @@ publish: true
 ---
 
 ::: tip
-在这里记录计算机批处理小技巧
+在这里记录计算机批处理小技巧 (win + L to locker the computer)
 :::
 
 <!-- more -->

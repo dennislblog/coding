@@ -28,3 +28,7 @@ yarn serve
 ```
 yarn deploy
 ```
+
+## 刷题宝典
+
+[1] [几乎刷完了力扣所有的堆题，我发现了这些东西。。。](https://lucifer.ren/blog/)

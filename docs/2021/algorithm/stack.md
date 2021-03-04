@@ -32,6 +32,32 @@ def simplifyPath(self, path: str) -> str:
 ```
 :::
 ::::
+:::: tab 模拟栈
+## 946. Validate Stack Sequences
+
+__问题__： 给定`pushed`和`popped`两个序列, 判断按照`pushed`顺序, 到`popped`出来顺序, 用一个栈是否可以实现
+
+```
+输入：pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+输出：true
+push(1), push(2), push(3), push(4), pop() -> 4,
+push(5), pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+顺序是[4,5,3,2,1]
+```
+
+::: details
+搞一个辅助栈, 模拟整个过程: 遍历入栈元素, 如果辅助栈不为空且栈顶等于出栈$[i]$, 弹出和$i+1$, 否则就加到辅助栈里
+```python
+def validateStackSequences(self, pushed: List[int], popped: List[int]) -> bool:
+    stack = []; i = 0
+    for num in pushed:
+        stack.append(num)
+        while stack and stack[-1] == popped[i]:
+            stack.pop(); i += 1
+    return stack == []
+```
+:::
+::::
 :::::
 
 <big> 单调栈问题 </big>

@@ -7,13 +7,20 @@ tags:
    - Leetcode
 ---
 
+<big>栈的应用</big>
+::: right
+📝 数据结构考点
+:::
 
+
+::::: tabs type: card
+:::: tab 迭代器最后一个元素 
 ## 284. Peeking Iterator
 
-__问题__： 设计迭代器类的接口，接口包含两个方法： `next()` 和 `hasNext()`. 
+__问题__： 在普通的迭代器类Iterator的基础上增加了peek的功能，就是返回查看下一个值的功能，但是不移动指针，next()函数才会移动指针
 
 ::: details
-这道题的难点在于如何不调用`next`就能知道`iterator`的下一个元素呢? 答案是提前把这个元素存起来
+这道题的难点在于如何不调用`next`就能知道`iterator`的下一个元素呢? 可以定义一个变量专门来保存下一个值(相当于提前`pop`), 如果下面还有值的话.
 
 ```python
 class PeekingIterator:
@@ -44,7 +51,48 @@ class PeekingIterator:
 现在调用 peek() 返回 2，下一个元素。 在此之后调用 next() 仍然返回 2。
 最后一次调用 next() 返回 3，末尾元素。 在此之后调用 hasNext() 应该返回 False。
 ```
+::::
+:::: tab 按频率出栈
+## 895. Maximum Frequency Stack
 
+__问题__： 设计一个按照元素出现频率出栈的栈, 当两个元素频率相同时, 后入先出
+
+::: details
+- 用`max_cnt`维持当前最大频率, 
+- 然后频率等于`max_cnt`的元素相继出栈(按入栈顺序)
+- 另外用一个`cnt`字典来跟踪每个元素当前的频率, 如果`cnt2num[max_cnt]`这个list里再也没有元素了, 说明这个频率的都出栈了, 此时`max_cnt -= 1`
+
+```python
+"""用优先队列的办法行不通, 是因为每次泵出一个, 队列相关的元素优先级要做出相应改变, 这个并不在priorityQueue的API里?
+max := 3
+cnt := {5: 3, 7: 2, 4: 1}
+cnt2num 
+    1: [5, 7, 4]
+    2: [5, 7]
+    3: [5]
+"""
+def __init__(self):
+    self.cnt = collections.defaultdict(int)
+    self.max_cnt = 0
+    self.cnt2num = collections.defaultdict(list)
+
+def push(self, x: int) -> None:
+    self.cnt[x] += 1
+    self.max_cnt = max(self.max_cnt, self.cnt[x])
+    self.cnt2num[self.cnt[x]].append(x)
+        
+
+def pop(self) -> int:
+    ans = self.cnt2num[self.max_cnt].pop()
+    self.cnt[ans] -= 1
+    if not self.cnt2num[self.max_cnt]:
+        self.max_cnt -= 1
+    return ans
+```
+:::
+![](~@assets/lc-895.png#center)
+::::
+:::::
 
 ## 173. Binary Search Tree Iterator
 **问题**：写一个中序遍历的迭代器, 要求存储空间不得超过 log(n) 平摊访问时间不超过 O(1)
@@ -82,6 +130,8 @@ class BSTIterator:
 
 ::::: tabs type: card
 :::: tab 坏的计算器
+## 991. Broken Calculator
+
 **问题**: 把$X$通过两种运算变成$Y$, 只能执行 1) 乘以2； 2) 减去1
 
 __例子__: 例如$X = 2, Y = 3$， 我们有 $2 \rightarrow 4 \rightarrow 3$ 两步, 返回答案$2$
@@ -96,6 +146,65 @@ def brokenCalc(self, X: int, Y: int) -> int:
         else:               Y = Y + 1   #Y是奇数
         res += 1
     return res + (X-Y)
+```
+:::
+::::
+:::: tab set应用
+## 575. Distribute Candies
+
+__问题__： 把糖(list of type)分成两堆, 其中一堆种类最多可以有多少
+
+__例子__： candyType = $[6,6,6,6,6,4]$, 返回$2$ 
+
+```python
+"""
+1. 如果糖的种类 < 糖个数的一半 ===> 每种一个糖都不够一半
+2. 如果糖的种类 > 糖个数的一半 ===> 不管怎么分, 一半凑不齐所有种类
+"""
+def distributeCandies(self, candyType: List[int]) -> int:
+    n = len(candyType); distinct = set(candyType)
+    return min(n//2, len(distinct))
+```
+:::::
+
+
+<big>位运算</big>
+::: right
+📝 位运算规则, $1 << n$相当于$2^n$, $3 << n$相当于$3 \times 2^n$, $n >> 1$相当于$n / 2$
+:::
+
+::::: tabs type: card
+:::: tab 除法
+## 29. Divide Two Integers
+
+__问题__： 计算两个数相除的商，但是不能使用乘法，除法和取余
+
+::: details
+```python
+"""举例： 25 / 2
+while 25 >= 2:
+    while 25 >= (2 << 3)
+    res += (1 << 3); dividend = 25 - 16 = 9
+    while 9 >= (2 << 2)
+    res += (1 << 2); dividend = 9 - 8 = 1
+所以 res = 8 + 4 = 12
+"""
+def divide(self, dividend: int, divisor: int) -> int:
+    if dividend == 0: return 0
+    negative = False
+    if (dividend < 0) ^ (divisor < 0): negative = True
+    dividend, divisor = abs(dividend), abs(divisor)
+    res = 0 
+    while dividend >= divisor:
+        n = 0
+        while dividend >= (divisor << n):
+            n += 1
+        n = n - 1
+        res += (1 << n); dividend -= (divisor << n)
+    res = -res if negative else res
+    if res < -(1 << 31) or res > (1 << 31) -1:
+        return (1 << 31) -1
+    return res
 ```
 :::
 ::::
