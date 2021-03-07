@@ -12,7 +12,6 @@ tags:
 📝 数据结构考点
 :::
 
-
 ::::: tabs type: card
 :::: tab 迭代器最后一个元素 
 ## 284. Peeking Iterator
@@ -92,8 +91,7 @@ def pop(self) -> int:
 :::
 ![](~@assets/lc-895.png#center)
 ::::
-:::::
-
+:::: tab 中序遍历迭代器
 ## 173. Binary Search Tree Iterator
 **问题**：写一个中序遍历的迭代器, 要求存储空间不得超过 log(n) 平摊访问时间不超过 O(1)
 ::: details
@@ -121,7 +119,10 @@ class BSTIterator:
 :::
 
 ![173. Binary Search Tree Iterator](~@assets/lc-173.png#center)
+::::
+:::::
 
+---
 
 <big>逆向思维</big>
 ::: right
@@ -167,6 +168,7 @@ def distributeCandies(self, candyType: List[int]) -> int:
 ```
 :::::
 
+---
 
 <big>位运算</big>
 ::: right
@@ -208,4 +210,91 @@ def divide(self, dividend: int, divisor: int) -> int:
 ```
 :::
 ::::
+:::::
+
+---
+
+<big>哈希表</big>
+::: right
+📝 数据结构
+:::
+
+::::: tabs type: card
+:::: tab 哈希集
+## 705. Design HashSet
+__问题__： 动手实现一个`HashSet`. 不能用已经内置的函数
+
+::: details
+创建一个二维数组, 第一个维度存取hash, 第二个维度保存具体元素
+```python
+"""
+obj = MyHashSet()
+obj.add(1000000)
+obj.remove(1000000)
+param_3 = obj.contains(1000000) # return False
+"""
+class MyHashSet:
+
+    def __init__(self):
+        self.buckets = 1000
+        self.itemsPerBucket = 1001 #overall ele <= 1e6
+        self.table = [[] for _ in range(self.buckets+1)]
+        self.find = lambda key: divmod(key, self.buckets)
+        
+    def add(self, key: int) -> None:
+        hashkey, pos = self.find(key)
+        if not self.table[hashkey]:
+            self.table[hashkey] = [0] * self.itemsPerBucket
+        self.table[hashkey][pos] = 1
+
+    def remove(self, key: int) -> None:
+        hashkey, pos = self.find(key)
+        if self.table[hashkey]:
+            self.table[hashkey][pos] = 0
+
+    def contains(self, key: int) -> bool:
+        hashkey, pos = self.find(key)
+        return (self.table[hashkey] != []) and (self.table[hashkey][pos] == 1)
+```
+:::
+::::
+:::: tab 哈希表
+## 706. Design HashMap
+__问题__： 动手实现一个`HashMap`. 不能用已经内置的函数
+::: details
+创建一个二维数组, 第一个维度存取hash, 第二个维度保存具体元素, 跟$705$一样, 只是存具体的值, 而不是`0/1`, 这里值的范围是$[0,1e6]$
+```python
+"""
+obj = MyHashSet()
+obj.put(2, 1)
+obj.remove(2)
+param_3 = obj.contains(2) # return False
+"""
+class MyHashMap:
+
+    def __init__(self):
+        bucket, self.itemsPerBucket = 1001, 1001
+        self.table = [[] for _ in range(bucket)]
+        self.find = lambda key: divmod(key, bucket)
+
+    def put(self, key: int, value: int) -> None:
+        key, pos = self.find(key)
+        if not self.table[key]:
+            self.table[key] = [-1] * self.itemsPerBucket
+        self.table[key][pos] = value
+
+    def get(self, key: int) -> int:
+        key, pos = self.find(key)
+        if self.table[key] != [] and self.table[key][pos] != -1:
+            return self.table[key][pos]
+        return -1
+
+    def remove(self, key: int) -> None:
+        key, pos = self.find(key)
+        if self.table[key]:
+            self.table[key][pos] = -1
+```
+:::
+::::
+![](~@assets/lc-705.png#center)
 :::::

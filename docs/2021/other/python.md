@@ -17,6 +17,27 @@ publish: true
 
 <!-- more -->
 
+## `Numpy` 基本用法
+::::: tip Numpy常用方法
+:::: tab type: card
+::: tab meshgrid
+如何制作一个半边轮廓图
+```python
+a = np.linspace(a_MIN, a_MAX, xnum)
+a1, a2 = np.meshgrid(a, a)
+a = np.array([a1, a2]).reshape(2, -1).T
+a1, a2 = a.T
+mask = lambda x: np.ma.masked_array(x, (a1 + a2 > 1))
+π = mask(a @ p.f + p.ε - (a @ p.g - p.η) * p.b)
+df = pd.DataFrame({"a1": a1, "a2": a2, "profit": π})
+ax.contourf(a1, x, y, alpha=0.2)
+ax.clabel(ax.contour(x, x, y, linestyles='dotted'), colors='black')
+```
+![](~@assets/meshgrid-explanation.jpg#center)
+:::
+::::
+:::::
+
 ## `Cython` 基本用法
 ::::: tip Cython文件由两部分组成(和C类似)
 - 定义： `.pxd`文件, 比如下面例子里的`cimport numpy as np`, 大致等于`#include <numpy/numpy.h>`
@@ -235,6 +256,8 @@ clear/disable/enable number      这个number就是断点的ID, 用`b`查询
 ::::
 :::::
 
+
+## `Sympy` 基本用法
 !!!include(./python/sympy.md)!!!
 
 ## `Scipy` 基本用法
@@ -296,8 +319,63 @@ minimize(lambda x: -f(x), (0.1,), bounds=((0,1),))['x'][0]  # => 1.0
 :::::
 
 
+## `Streamlit` 基本用法 
+!!!include(./python/streamlit.md)!!!
 
+## `Pyomo` 基本用法
+::::: tip 用来做优化的
+[1] CBE30338[课程](http://jckantor.github.io/CBE30338/)
+:::: tabs type: card
+::: tab 基本介绍
+$$\begin{aligned}
+\max_{x,y \geq 0} &\ 40\ x + 30\ y  & \text{objective}\\
+\text{subject to:}\qquad \\
+x & \leq 40  & \text{demand constraint} \\
+x + y & \leq 80  & \text{labor A constraint} \\
+2x + y & \leq 100 & \text{labor B constraint}
+\end{aligned}$$
 
+```python
+from pyomo.environ import *
+import numpy as np
+from pyomo.opt import SolverFactory
+solverpath_exe = 'C:\\glpk-4.65\\w64\\glpsol'
+solvername = 'glpk'
+# solverpath_exe = 'C:\\Users\\denni\\Anaconda3\\pkgs\\ipopt_bin-3.11.1-23\\Library\\bin\\ipopt.exe'
+# solvername = 'ipopt'
+
+A = np.array([[1, 0], [1, 1], [2, 1]])
+b = np.array([40, 80, 100])
+c = np.array([40, 30])
+
+I = range(len(A))                   # set of row indices
+J = range(len(A.T))                 # set of column indices
+model = ConcreteModel()             # create a model instance
+model.x = Var(J)      # create x and y variables in the model
+model.constraints = ConstraintList()  # add model constraints
+for i in I:
+    model.constraints.add(sum(A[i, j]*model.x[j] for j in J) <= b[i])
+model.objective = Objective(          # add a model objective
+    expr=sum(c[j]*model.x[j] for j in J), sense=maximize)
+
+opt = SolverFactory(solvername, executable=solverpath_exe)
+solution = opt.solve(model)
+
+for j in J:
+    print("x[", j, "] =", model.x[j].value)
+model.constraints.display()
+"""
+x[ 0 ] = 20.0
+x[ 1 ] = 60.0
+constraints : Size=3
+    Key : Lower : Body  : Upper
+      1 :  None :  20.0 :  40.0
+      2 :  None :  80.0 :  80.0
+      3 :  None : 100.0 : 100.0
+"""
+```
+:::
+::::
 
 ## 参考
 

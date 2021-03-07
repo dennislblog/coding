@@ -61,6 +61,35 @@ m.norm(oo); m.norm(1); m.norm(2).evalf().round(2)
 :::::
 ::::::
 
+## 微积分
+::::: tip 微积分小记
+:::: tabs type: card
+::: tab 分部积分
+核心公式
+$$\int uv' dx = uv - \int u'v dx$$
+- 求高脚本的容积? 其侧壁的曲线函数$y=\exp(x)$, 半径从$0$到$1$的圆
+$$\begin{aligned}
+    V &= \int_1^e \pi (\ln y) dy \\
+      &= (\pi y\ln^2 y)\vert_1^e - 2\pi\int_1^e \ln y dy \\
+      &= \pi(y\ln^2 y - 2y\ln y + 2y)\vert_1^e = \pi(e - 2)
+\end{aligned}$$
+:::
+::: tab 矩阵微分
+<!-- ![](~@assets/ml_math_04.png#center) -->
+[参考大神写的资料](https://explained.ai/matrix-calculus/index.html#reference), 
+我自己也写了[一份](~@assets/math-matrix_derivative.pdf)
+- Kronecker product $\otimes$(\otimes): 张量乘积, 逐一匹配
+- Hadamard product $\circ$(\circ): 对应位置元素相乘
+
+假设我们现在有一个矩阵$\mathbf{X}$,
+- $\mathbf{M}_{i,j}$ 代表矩阵的镜像, 是去掉第$i$行和第$j$列之后, 剩余矩阵的行列式(determinant)
+- $\mathbf{C}_{i,j} = (-1)^{i+j}\mathbf{M}_{i,j}$ 被称作cofactor matrix
+- $adj(\mathbf{X}) = C^T$, 在求逆矩阵时会用到, 
+$$\mathbf{X}^{-1} = \text{adj}(\mathbf{X})/\det(\mathbf{X}) \Rightarrow \left(\mathbf{X}^{-1}\right)^T_{i,j} = \frac{1}{\det \mathbf{X}}\mathbf{C}_{i,j}$$
+:::
+::::
+:::::
+
 
 ## 基本数学
 
@@ -83,23 +112,6 @@ m.norm(oo); m.norm(1); m.norm(2).evalf().round(2)
 __例子__： 一辆车从$12:00$到$01:00$的任何时间都可以到达, 这时$\Omega$有无穷多个, 并且还不可数(无穷但按照某种标准如大小编号, 可以把他们数完), 那么就没有办法对任何一个结果$\omega$分配一个概率, 但是直觉会告诉你概率表达式应该是这个样子(正好符合事件集合的三个特性, $\sigma$-field)
 $$P([x_1, x_2]) = x_2 - x_1, \quad \forall 0 \leq x_1 \leq x_2 \leq 1$$
 :::
-::::: tab 分部积分
-核心公式
-$$\int uv' dx = uv - \int u'v dx$$
-- 求高脚本的容积? 其侧壁的曲线函数$y=\exp(x)$, 半径从$0$到$1$的圆
-:::: col-wrapper
-::: col-half
-$$\begin{aligned}
-    V &= \int_1^e \pi (\ln y) dy \\
-      &= (\pi y\ln^2 y)\vert_1^e - 2\pi\int_1^e \ln y dy \\
-      &= \pi(y\ln^2 y - 2y\ln y + 2y)\vert_1^e = \pi(e - 2)
-\end{aligned}$$
-:::
-::: col-half
-![](http://images2017.cnblogs.com/blog/1203675/201711/1203675-20171122141954086-6919942.png)
-:::
-::::
-:::::
 ::: tab Jansen不等式
 如果$f$是凸函数：
 $$f\left(\sum_{i=1}^k w_i x_i\right) \leq \sum_{i=1}^k w_i f(x_i)$$
@@ -258,3 +270,10 @@ mc.stationary_distributions.round(2)
 :::::
 ::::::
 
+
+
+## 参考
+
+[1] 一位大神在剑桥上学期间总结的[笔记](http://dec41.user.srcf.net/), 相当全
+
+[2] 一位北欧同学总结的统计/机器学习[笔记](https://github.com/kwichmann/statnotes)

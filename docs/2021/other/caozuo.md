@@ -19,6 +19,16 @@ publish: true
 ## 批量转换Jupyter
 ```
 workon imitate & jupyter nbconvert --to html *.ipynb
+
+# pip 换源
+pip config set global.index-url http://pypi.python.org/simple/
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# conda 换源 (.condarc文件)
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
+conda config --set show_channel_urls yes  #显示包的来源
+conda config --remove-key channels        #清空源配置, 出国
 ```
 
 ## 在错误出现之前调错
@@ -63,9 +73,22 @@ fig = px.line(x=["a","b","c"], y=[1,3,2], title="sample figure")
 fig.show()
 ```
 
-##IPython指令
+## IPython指令
 ```python
 %precision 4        # sets printed precision for floats to 4 decimal places
 %whos               # gives a list of variables and their values
 %quickref           # gives a list of magics
+```
+
+## NPM安装错误
+直接`npm install --ignore-scripts`
+```python
+"""
+gyp ERR! stack     import sys; print "%s.%s.%s" % sys.version_info[:3];
+"""
+```
+
+## 更新环境变量
+```
+set PATH=C #关闭后再打开 echo %PATH% 可以看见更新的路径
 ```

@@ -313,19 +313,45 @@ def nextPermutation(self, nums: List[int]) -> None:
 ```
 :::
 ::::
+![496. Next Greater Element III](~@assets/lc-496.png#center)
 :::::
 
-
-
-
-![496. Next Greater Element III](~@assets/lc-496.png#center)
+---
 
 <big> 排序题 </big>
 ::: right
-⚙️ 先排序, 再线性搜索
+⚙️ 万事不决先排序
 :::
 
 ::::: tabs type: card
+:::: tab 单词压缩
+## 820. Short Encoding of Words
+__问题__: 给你一个单词数组 words ，返回成功对 words 进行编码的最小助记字符串 s 的长度, 用`#`来标记每一个单词的结尾, 注意这里`time`和`me`共享结尾符号
+```
+输入：words = ["time", "me", "bell"]
+输出：10
+解释：一组有效编码为 s = "time#bell#" 和 indices = [0, 2, 5] 。
+words[0] = "time" ，s 开始于 indices[0] = 0 到下一个 '#' 结束的子字符串，如加粗部分所示 "time#bell#"
+words[1] = "me" ，s 开始于 indices[1] = 2 到下一个 '#' 结束的子字符串，如加粗部分所示 "time#bell#"
+words[2] = "bell" ，s 开始于 indices[2] = 5 到下一个 '#' 结束的子字符串，如加粗部分所示 "time#bell#"
+```
+::: details
+如果某个单词`s`能被单词`t`包含，那么它必须是`t`的后缀
+- 如果`s=me`可以被压缩, 那么它必然是`t=time`的后缀, 因此只需要`time#`就可以表征两个单词, 
+- 两两判断的复杂度是$O(n^2)$, 但是如果判断的单词都是大小相邻的, 就可以线性扫描比较了(按照长度和后缀的字母大小), 于是就有了下面那张图
+```python
+def minimumLengthEncoding(self, words: List[str]) -> int: 
+    words = sorted([word[::-1] for word in set(words)]) 
+    words.append("")      #！相当重要, 这样不会漏掉最后一个单词的比较
+    last = ""; ans = 0 
+    for word in words: 
+        if not word.startswith(last): 
+            ans += len(last) + 1 
+        last = word return ans
+```
+:::
+![](~@assets/lc-820.jpg#center)
+::::
 :::: tab 最小范围
 ## 910. Smallest Range II
 
@@ -408,6 +434,7 @@ def findUnsortedSubarray(self, nums: List[int]) -> int:
 ::::
 :::::
 
+---
 
 ## 880. Decoded String at Index
 
@@ -436,6 +463,7 @@ def decodeAtIndex(self, S: str, K: int) -> str:
 
 ![880. Decoded String at Index](~@assets/lc-880.png#center)
 
+---
 
 ## 1539. Kth Missing Positive Number
 
@@ -467,6 +495,8 @@ def findKthPositive(self, arr: List[int], k: int) -> int:
 
 ![1539. Kth Missing Positive Number](~@assets/lc-1539.png#center)
 
+---
+
 ## 3. Longest Substring Without Repeating Characters
 
 **问题**： 给定一个字符串(例如`s='abcdfdc'`)，请你找出其中不含有重复字符的最长子串的长度(例如这里就是`abcdf`, 答案是5)。
@@ -490,6 +520,7 @@ def lengthOfLongestSubstring(self, s: str) -> int:
 
 ![3. Longest Substring Without Repeating Characters](~@assets/lc-3.png#center)
 
+---
 
 ## 88. Merge Sorted Array
 
@@ -511,6 +542,8 @@ def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
 :::
 
 ![88. Merge Sorted Array](~@assets/lc-88.gif#center)
+
+---
 
 <big>两头夹逼</big>
 ::: right
@@ -561,6 +594,8 @@ def maxArea(self, height: List[int]) -> int:
 ![11. Container With Most Water](~@assets/lc-11.png#center)
 ::::
 :::::
+
+---
 
 ## 1658. Minimum Operations to Reduce X to Zero
 
