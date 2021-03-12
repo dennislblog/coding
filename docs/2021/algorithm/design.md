@@ -210,6 +210,24 @@ def divide(self, dividend: int, divisor: int) -> int:
 ```
 :::
 ::::
+:::: tab 字符二进制
+## 1461. Check If a String Contains All Binary Codes of Size K
+
+__问题__： 如果所有长度为$k$的二进制字符串都是$s$的子串, 返回 True ，否则返回 False
+
+__例子__： `s = "0110", k = 2`, 答案是False, 因为虽然`"01","10","11"`都有包括但是, `"00"`没有包含在里面
+
+::: details
+直接把所有长度为$k$的子字符串加到一个集合中, 然后统计所有不同的子串数目是否有$2^K$个
+```python
+def hasAllCodes(self, s: str, k: int) -> bool:
+    S = set(); n = len(s)
+    for i in range(n-k+1):
+        S.add(s[i:i+k])
+    return len(S) == 2**k
+```
+:::
+::::
 :::::
 
 ---

@@ -84,8 +84,13 @@ $$\begin{aligned}
 假设我们现在有一个矩阵$\mathbf{X}$,
 - $\mathbf{M}_{i,j}$ 代表矩阵的镜像, 是去掉第$i$行和第$j$列之后, 剩余矩阵的行列式(determinant)
 - $\mathbf{C}_{i,j} = (-1)^{i+j}\mathbf{M}_{i,j}$ 被称作cofactor matrix
-- $adj(\mathbf{X}) = C^T$, 在求逆矩阵时会用到, 
+- $\color{black} adj(\mathbf{X}) = C^T$, 在求逆矩阵时会用到(if X is invertible), 
 $$\mathbf{X}^{-1} = \text{adj}(\mathbf{X})/\det(\mathbf{X}) \Rightarrow \left(\mathbf{X}^{-1}\right)^T_{i,j} = \frac{1}{\det \mathbf{X}}\mathbf{C}_{i,j}$$
+
+- $\det \mathbf{X} = \sum_{k=1}^{n} X_{ik}C_{ik}$, by the production rule
+$$\frac{\partial \det \mathbf{X}}{\partial X_{ij}} = \sum_{k=1}^{n} \left(\frac{\partial X_{ik}}{\partial X_{ij}}C_{ik} + \frac{\partial C_{ik}}{\partial X_{ij}}X_{ik}\right)$$
+> $\partial X_{ik}/\partial X_{ij} = 1$ if $k = j$ otherwise $0$, 所以第一项结果就是$C_{ij}$, 而后面那一项根据$C_{ij}$的定义, 是抠掉了$i$行和$j$列的镜像值, 因此$\partial C_{ik}/\partial X_{ij} = 0 \quad \forall k$, 所以我们有
+> $$\frac{\partial \log \det \mathbf{X}}{\mathbf{X}} = \frac{1}{\det \mathbf{X}}\frac{\partial \det \mathbf{X}}{\partial X_{ij}} = \frac{C_{ij}}{\det \mathbf{X}} = (X^{-1})^T_{ij}$$
 :::
 ::::
 :::::

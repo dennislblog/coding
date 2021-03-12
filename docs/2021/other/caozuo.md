@@ -16,6 +16,39 @@ publish: true
 
 <!-- more -->
 
+## Python对象占用内存大小
+```python
+def get_size(obj, seen=None):
+    """Recursively finds size of objects"""
+    size = sys.getsizeof(obj)
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0
+    seen.add(obj_id)
+    if isinstance(obj, dict):
+        size += sum([get_size(v, seen) for v in obj.values()])
+        size += sum([get_size(k, seen) for k in obj.keys()])
+    elif hasattr(obj, '__dict__'):
+        size += get_size(obj.__dict__, seen)
+    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
+        size += sum([get_size(i, seen) for i in obj])
+    return size
+
+"""返回比特字节
+get_size(instance)
+>> 3.037754 x 1e6 bytes
+"""
+```
+
+## 子文件夹
+Move all files from subdirectories to current directory
+```
+mv */*.ipynb .                     #将子文件夹内ipynb文件全部放到当前文件夹
+find . -type d -empty -delete      #将内容为空的子文件夹删除
+```
+
 ## 批量转换Jupyter
 ```
 workon imitate & jupyter nbconvert --to html *.ipynb
@@ -91,4 +124,13 @@ gyp ERR! stack     import sys; print "%s.%s.%s" % sys.version_info[:3];
 ## 更新环境变量
 ```
 set PATH=C #关闭后再打开 echo %PATH% 可以看见更新的路径
+```
+
+## 关闭占用端口程序
+这里示范怎么把占用端口$8891$的程序后台强行关闭
+```
+netstat -ano | findstr 8891
+# TCP    127.0.0.1:8891         0.0.0.0:0              LISTENING       40128
+taskkill /F /PID 40128
+# SUCCESS: The process with PID 40128 has been terminated.
 ```

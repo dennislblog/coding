@@ -205,6 +205,59 @@ def verticalTraversal(self, root: TreeNode) -> List[List[int]]:
 
 ![987. Vertical Order Traversal of a Binary Tree](~@assets/lc-987.png#center)
 
+---
+
+## 623. Add One Row to Tre
+
+**问题**: 新添一层值为$v$的节点到二叉树的第$d$层. 见图
+
+**例子**: tree = '[4,2,6,3,1,5]', v = 1, d = 3 (即在第二层所有节点添加$v=1$的子节点)
+
+:::: tabs type: card
+::: tab 深度优先
+```python
+def addOneRow(self, root: TreeNode, v: int, d: int) -> TreeNode:
+    if not root: return None
+    if d == 1:
+        new  = TreeNode(v); new.left = root
+        root = new 
+    elif d == 2:
+        left, root.left   = root.left, TreeNode(v)
+        right, root.right = root.right, TreeNode(v)
+        root.left.left = left; root.right.right = right
+    else:
+        self.addOneRow(root.left, v, d-1)    
+        self.addOneRow(root.right, v, d-1)    
+    return root
+```
+:::
+::: tab 广度优先
+```python
+def addOneRow(self, root: TreeNode, v: int, d: int) -> TreeNode:
+    if d == 1:
+        new = TreeNode(v); new.left = root
+        return new
+    q = collections.deque([root])
+    while d > 2:
+        for _ in range(len(q)):
+            cur = q.popleft()
+            if cur.left:  q.append(cur.left)
+            if cur.right: q.append(cur.right)
+        d -= 1
+    while q: # d == 2
+        cur = q.popleft()
+        tmp = cur.left; cur.left = TreeNode(v); cur.left.left = tmp
+        tmp = cur.right; cur.right = TreeNode(v); cur.right.right = tmp
+    return root
+```
+:::
+::::
+
+
+![](~@assets/lc-623.png#center)
+
+---
+
 <big>二叉树排序问题</big>
 ::: right
 🎙️ 记住二叉树每个节点都提供了一个上界/下界
