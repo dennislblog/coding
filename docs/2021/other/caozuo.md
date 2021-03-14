@@ -16,6 +16,42 @@ publish: true
 
 <!-- more -->
 
+## Latex相关
+```tex
+% 1. inline mode 数学公式超出边界, 做法就是在document加\sloppy
+\begin{document}\sloppy
+...
+\end{document}
+
+% 2. conditonal on 符号, 用bigg或者更大的Bigg, 然后rvert是丨, 如果是希望自动调整高度
+\left. \frac{1}{H(\hat S)} \right\rvert_{y=Y}
+
+% 3. 在align环境下如果想把label放在某一行, 得每行后面加\nonumber
+
+```
+
+## Git相关
+参考资料： [subtree教程](https://segmentfault.com/a/1190000012002151)
+```
+1. 创建远程分支
+git remote add deploy https://github.com/dennislblog/infosys.git
+
+2. 以某一个文件夹为蓝本在当前目录下创建一个子分支child, squash表示不考虑过往commit
+git subtree split --prefix=other --squash --branch child
+
+3. 清除远程与本地不兼容的文件
+git rm -r --cached to-delete-folder
+git add . => git commit -m "msg" => git push remote local
+
+4. 
+```
+
+## 自动生成安装依赖
+加"encoding"是考虑有汉字注释的原因
+```
+pipreqs --encoding=utf-8 ./
+```
+
 ## Python对象占用内存大小
 ```python
 def get_size(obj, seen=None):

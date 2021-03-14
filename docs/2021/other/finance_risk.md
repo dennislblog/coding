@@ -35,5 +35,23 @@ $$VaR_{t+1}^p = -\text{Percentile}\Big(\{R_{PF,t+1-\tau}\}_{\tau=1}^m, 100p\Big)
 $$\eta_\tau = \Big\{\eta^{\tau-1}(1-\eta)/(1-\eta^m)\Big\}_{\eta=1}^m$$
 
 
+## 绝对/相对风险厌恶
+
+选自[维基百科](https://en.wikipedia.org/wiki/Risk_aversion), 假设一个稳定投资可以获得$40$元, 而一个风险赌注有一半几率获得$100$元, 一半几率啥都没有, 期望收益是$50$元, 假设在他看来这两者没有区别的话, 我们可以认为他的效能函数满足: $u(40) = (u(0) + u(100))/2 = 50$, 也就是说此人最多愿意牺牲$10$元的期望价值, 已获得稳定的收益保障. 
+
+$u(c)$的曲率越大(弯折程度), 越风险厌恶, 一种衡量风险厌恶的方法是"Arrow-Pratt measure of absolute risk-aversion, ARA", 定义是
+$$A(c) = -\frac{u^{''}(c)}{u'(c)}$$
+根据$dA/dc$, 即风险厌恶同资产的关系区分, 有三种形式:
+1. CARA, 比如$u(c) = 1 - \exp(-\lambda c) \Rightarrow A(c) = \lambda$, 其风险厌恶水平一直保持在$\lambda$, 不随资产增加减少而变化, 比如银行?
+2. DARA, 比如$u(c) = \log(c) \Rightarrow A(c) = 1/c$, 随着资产$c$的增加, 更愿意冒险了
+3. IARA, 比如$u(c) = c - \lambda c^2 \Rightarrow A(c) = 2\lambda/(1-2\lambda c)$, 随着资产$c$的增加, 变得更保守, 比如辛辛苦苦打拼的事业?
+
+另一种方法通过衡量此人愿意投入的资金占当前个人总资产比率的程度(中产和富豪不太可能玩一样的赌注), "Arrow–Pratt measure of relative risk aversion, RRA", 定义是
+$$R(c) = -\frac{u^{''}(c)\cdot c}{u'(c)} = A(c)\cdot c$$
+我们发现如果$R(c) \perp c$, 那么$A(c) = \frac{1}{c}$, 是一个DARA效能, 同样我们把相对风险厌恶分成三类
+1. CRRA, 比如$u(c) = c^{1-\lambda} \Rightarrow R(c) = \lambda$, 无论总资产增加多少, 都定投(每个月拿总资产10%用来投资或消费)
+2. DRRA, 比如$u(c) = (c-\eta)^{1-\lambda}-1/(1-\lambda) \Rightarrow R(c) = \lambda c/(c-\eta)$, 相对厌恶水平随总资产增加而降低, 越有钱消费比例更高, 这不是作死吗?
+3. IRRA, 比如$u(c) = 1-\exp(-\lambda c) \Rightarrow R(c) = \lambda c$, 越有钱, 投资比例下降, 比如在加薪或市场景气的时候, 还是选择每月定投$100$元
+
 <!-- to do: https://zhuanlan.zhihu.com/p/24311879 分析CYTHON的用法 -->
 

@@ -324,6 +324,27 @@ def nextPermutation(self, nums: List[int]) -> None:
 :::
 
 ::::: tabs type: card
+:::: tab 二叉树组合
+__问题__: 给定了一个数组, 可以从这个数组中选取任意多的节点构建成二叉树, 要求二叉树中的非叶子节点的值必须等于其子节点的和. 问有多少种组合方案? 
+
+__例子__: "[2, 4, 5, 10]", 总共有7个, 分别是只有一个节点的"[2], [4], [5], [10]", 有3个节点的"[4, 2, 2], [10, 2, 5], [10, 5, 2]", 每一个节点都是两个子节点的乘积
+
+::: details
+$f(16) = 1 + f(1) + f(16) + f(2) + f(8) + f(4)$, 如果$1,2,4,8$这些数都存在list里面的话, 节点 = 左子树值f(left) x 右子树值f(right), 左右如果数字不同, 还可以互换
+
+```python
+def numFactoredBinaryTrees(self, arr: List[int]) -> int:
+    arr.sort(); dp = {}
+    for i, x in enumerate(arr):
+        dp[x] = 1
+        for j in range(i+1):
+            if x % arr[j] == 0 and x/arr[j] in dp:
+                dp[x] += dp[arr[j]] * dp[x/arr[j]]
+    return sum(dp.values()) % (10**9 + 7)
+```
+:::
+![](~@assets/lc-823.png#center)
+::::
 :::: tab 单词压缩
 ## 820. Short Encoding of Words
 __问题__: 给你一个单词数组 words ，返回成功对 words 进行编码的最小助记字符串 s 的长度, 用`#`来标记每一个单词的结尾, 注意这里`time`和`me`共享结尾符号
