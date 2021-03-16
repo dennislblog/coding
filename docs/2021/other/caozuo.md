@@ -43,7 +43,10 @@ git subtree split --prefix=other --squash --branch child
 git rm -r --cached to-delete-folder
 git add . => git commit -m "msg" => git push remote local
 
-4. 
+4. 突然告诉我Connection was reset in connection to github.com:443
+#  从电脑-settings-proxy找到代理端口, 我现在的VPN是10809, 之后reset就好了
+git config --global http.proxy 127.0.0.1:10809
+git config --global https.proxy 127.0.0.1:10809
 ```
 
 ## 自动生成安装依赖

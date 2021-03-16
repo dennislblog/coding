@@ -6,7 +6,7 @@ categories:
   - Knowledge
 tags:
   - Math
-sidebarDepth: 2
+sidebarDepth: 3
 publish: true
 ---
 
@@ -16,6 +16,43 @@ publish: true
 
 <!-- more -->
 
+## 条件期望
+
+::::: tip 总结常用公式
+参考资料[^1][^2]
+
+[^1]: [切比雪夫不等式到底是个什么概念?](https://www.zhihu.com/question/27821324)
+[^2]: [条件分布与条件期望](https://zhuanlan.zhihu.com/p/93938795)
+:::: tabs type: card
+::: tab 重要公式
+证明先欠下, 先直接上结论
+1. 马尔科夫不等式, 对于任意$a > 0$, 我们有$P(X \geq a) \leq \mathbb{E}[X]/a$
+> 应用: 目前中国人均收入$\mu = 51,350$, 设$a = 1,000,000$, 则年薪超过百万的估计$P(X \geq a) \leq \frac{\mu}{a} \approx 5.14\%$, 全国985院校录取率是低于5%的, 因此这个估计还是太乐观了?
+
+2. 切比雪夫不等式, 对于任意$t > 0, \mu = \mathbb{E}[x], \sigma = \sqrt{\mathbb{V}[x]}$, 我们有$P(|X - \mu| \geq k\sigma) \leq 1/k^2$
+> 应用：还是回答上面那个问题, 人均收入的标准差$\sigma = 44,000$, 一百万约等于$21$倍标准差, 则切比雪夫的估计$P(|X-\mu| \geq 21\sigma) \leq \frac{1}{21^2} \approx 0.22\%$, 最多只有千分之二的概率, 看似更加准确(真实情况只有万分之四)
+
+3. $\mathbb{E}[X] = \mathbb{E}[\mathbb{E}[X\vert Y]]$, 全部的平均等于各部分平均的平均, 
+$$\begin{aligned}
+  E(X| Y = y) &= \sum_{x \in \mathcal{X}} P(X=x\vert y) = \int_{\mathcal{X}} x f_X(x \vert y)dx \\
+  \mathbb{V}[X\vert Y=y] &= \mathbb{E}\left([X - \mathbb{E}[X\vert y]]^2\vert y\right) = \int_{\mathcal{X}} (x - \mathbb{E}[x\vert y])^2 f(x\vert y) dx
+\end{aligned}$$
+> 应用: 先找到一个和$X$有关的量$Y$, 利用$Y$分成若干小区域, 分别计算这些小区域上$X$的均值, 然后再对这些小区域做加权平均, 比如这个小区人口占总人口的比例. 如果$X$是$\mathcal{F}$可测的(measurable), 则$\mathbb{E}[X \vert \mathcal{F}] = X$
+
+4. $\mathbb{V}[X] = \mathbb{V}(\mathbb{E}[X\vert Y]) + \mathbb{E}(\mathbb{V}[X\vert Y])$, 用回归比较好理解, $X = f(Y) + \epsilon, f(Y) = \mathbb{E}[X \vert Y]$, 第一项就是和$X$相关部分的方差, 第二项和残差平方数值一样, 这是因为根据重期望公式: $\mathbb{E}[X] = \mathbb{E}(\mathbb{E}[X|Y])$, 我们有
+$$\begin{aligned}
+  \mathbb{V}(\mathbb{E}[X\vert Y]) &= \mathbb{V}[f(Y)] \\
+  \mathbb{E}(\mathbb{V}[X\vert Y]) &= \mathbb{E}(\mathbb{E}[X^2\vert Y] - f^2(Y)) \\
+  &= \mathbb{E}(X^2 - 2Xf(Y) + f^2(Y)) = \mathbb{V}[\epsilon]
+\end{aligned}$$
+> 应用: 考虑一个概率空间, $(\Omega, \mathcal{F}_0, \mathbb{P})$, 其实就是一个三维空间, 将空间一点$X$投射到一个闭合空间$L^2(\mathcal{F})$(投影点是存在且唯一的), 定义向量内积$(X,Y) = \mathbb{E}[XY]$, 则我们有
+> - $X$到平面其他任意一点的距离$c = \mathbb{E}[(X - \mathbb{E}[X \vert \mathcal{G}])^2]$, 其中$\mathcal{G} = \{\Omega, \empty\}$空间所有点, $\mathcal{G}$对预测$X$没有丝毫帮助, 因此$\mathbb{E}[X \vert \mathcal{G}] = \mathbb{E}[X]$
+> - 然后这个点在平面的投射$\mathbb{E}[X \vert \mathcal{F}]$最好的预测了$X$(条件期望), 这些点同无模型估计的点$\mathbb{E}[X \vert \mathcal{G}]$之间的距离就是模型预测值的方差$\mathbb{V}(\mathbb{E}[X | Y])$(按照定义就是后面这个式子) $b = \mathbb{E}[(\mathbb{E}[X \vert \mathcal{F}] - \mathbb{E}[X \vert \mathcal{G}])^2]$
+> - 最后就是到投射点的距离, 可以看做期望方差, $a = \mathbb{E}[(X - \mathbb{E}[X \vert \mathcal{F}])^2]$, 根据勾股定理我们有 $a^2 + b^2 = c^2$
+> ![](~@assets/ml_math_05.png#center)
+:::
+::::
+:::::
 
 ## 范数
 
@@ -63,17 +100,8 @@ m.norm(oo); m.norm(1); m.norm(2).evalf().round(2)
 
 ## 微积分
 ::::: tip 微积分小记
+### 微分知识
 :::: tabs type: card
-::: tab 分部积分
-核心公式
-$$\int uv' dx = uv - \int u'v dx$$
-- 求高脚本的容积? 其侧壁的曲线函数$y=\exp(x)$, 半径从$0$到$1$的圆
-$$\begin{aligned}
-    V &= \int_1^e \pi (\ln y) dy \\
-      &= (\pi y\ln^2 y)\vert_1^e - 2\pi\int_1^e \ln y dy \\
-      &= \pi(y\ln^2 y - 2y\ln y + 2y)\vert_1^e = \pi(e - 2)
-\end{aligned}$$
-:::
 ::: tab 矩阵微分
 <!-- ![](~@assets/ml_math_04.png#center) -->
 [参考大神写的资料](https://explained.ai/matrix-calculus/index.html#reference), 
@@ -91,6 +119,27 @@ $$\mathbf{X}^{-1} = \text{adj}(\mathbf{X})/\det(\mathbf{X}) \Rightarrow \left(\m
 $$\frac{\partial \det \mathbf{X}}{\partial X_{ij}} = \sum_{k=1}^{n} \left(\frac{\partial X_{ik}}{\partial X_{ij}}C_{ik} + \frac{\partial C_{ik}}{\partial X_{ij}}X_{ik}\right)$$
 > $\partial X_{ik}/\partial X_{ij} = 1$ if $k = j$ otherwise $0$, 所以第一项结果就是$C_{ij}$, 而后面那一项根据$C_{ij}$的定义, 是抠掉了$i$行和$j$列的镜像值, 因此$\partial C_{ik}/\partial X_{ij} = 0 \quad \forall k$, 所以我们有
 > $$\frac{\partial \log \det \mathbf{X}}{\mathbf{X}} = \frac{1}{\det \mathbf{X}}\frac{\partial \det \mathbf{X}}{\partial X_{ij}} = \frac{C_{ij}}{\det \mathbf{X}} = (X^{-1})^T_{ij}$$
+:::
+::::
+### 积分知识
+:::: tabs type: card
+::: tab 分部积分
+核心公式
+$$\int uv' dx = uv - \int u'v dx$$
+- 求高脚本的容积? 其侧壁的曲线函数$y=\exp(x)$, 半径从$0$到$1$的圆
+$$\begin{aligned}
+    V &= \int_1^e \pi (\ln y) dy \\
+      &= (\pi y\ln^2 y)\vert_1^e - 2\pi\int_1^e \ln y dy \\
+      &= \pi(y\ln^2 y - 2y\ln y + 2y)\vert_1^e = \pi(e - 2)
+\end{aligned}$$
+:::
+::: tab 变限积分
+$$\begin{array}{rl}
+\frac{d}{dt}\int_a^{\phi(x)}f(t)dt   & = f(\phi(x))\cdot\phi'(x) \\
+\frac{d}{dt}\int_{\psi(x)}^{\phi(x)}f(t)dt  & = f(\phi(x))\cdot\phi'(x) - f(\psi(x))\cdot\psi'(x)
+\end{array}$$
+
+> 例如$\frac{d}{dt}\int_0^{x^2}\sin2x dx = 2x\cdot \sin(2x^2)$
 :::
 ::::
 :::::
@@ -282,3 +331,5 @@ mc.stationary_distributions.round(2)
 [1] 一位大神在剑桥上学期间总结的[笔记](http://dec41.user.srcf.net/), 相当全
 
 [2] 一位北欧同学总结的统计/机器学习[笔记](https://github.com/kwichmann/statnotes)
+
+[3] 港中文金融博士在读[笔记](https://www.zhihu.com/people/ltm1995/columns)

@@ -316,3 +316,32 @@ class MyHashMap:
 ::::
 ![](~@assets/lc-705.png#center)
 :::::
+
+---
+
+## 535. Encode and Decode TinyURL
+
+:::: tip
+__问题__： 这个题是个佛性题, 不给任何要求, 只要能编码/解码就行, 比如
+```python
+codec = Codec()
+input = "https://leetcode.com/problems/design-tinyurl"
+encode = codec.encode(input)
+# >> return a short url, for example, http://tinyurl.com/0
+decode = codec.decode(encode)
+# >> return original input "https://leetcode.com/problems/design-tinyurl"
+```
+
+::: details
+做法很简单, 设计一个数组, 对每一个输入给与一个单独的编码即可, 注意字符串的处理即可
+```python
+class Codec:
+    urls = []
+    def encode(self, longUrl: str) -> str:
+        self.urls.append(longUrl)
+        return "http://tinyurl.com/" + str(len(self.urls)-1)
+    def decode(self, shortUrl: str) -> str:
+        return self.urls[int(shortUrl.split('/')[-1])]
+```
+:::
+::::

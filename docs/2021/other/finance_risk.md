@@ -37,6 +37,7 @@ $$\eta_\tau = \Big\{\eta^{\tau-1}(1-\eta)/(1-\eta^m)\Big\}_{\eta=1}^m$$
 
 ## 绝对/相对风险厌恶
 
+::: tip 风险厌恶测量方法
 选自[维基百科](https://en.wikipedia.org/wiki/Risk_aversion), 假设一个稳定投资可以获得$40$元, 而一个风险赌注有一半几率获得$100$元, 一半几率啥都没有, 期望收益是$50$元, 假设在他看来这两者没有区别的话, 我们可以认为他的效能函数满足: $u(40) = (u(0) + u(100))/2 = 50$, 也就是说此人最多愿意牺牲$10$元的期望价值, 已获得稳定的收益保障. 
 
 $u(c)$的曲率越大(弯折程度), 越风险厌恶, 一种衡量风险厌恶的方法是"Arrow-Pratt measure of absolute risk-aversion, ARA", 定义是
@@ -54,4 +55,4 @@ $$R(c) = -\frac{u^{''}(c)\cdot c}{u'(c)} = A(c)\cdot c$$
 3. IRRA, 比如$u(c) = 1-\exp(-\lambda c) \Rightarrow R(c) = \lambda c$, 越有钱, 投资比例下降, 比如在加薪或市场景气的时候, 还是选择每月定投$100$元
 
 <!-- to do: https://zhuanlan.zhihu.com/p/24311879 分析CYTHON的用法 -->
-
+:::
