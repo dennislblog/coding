@@ -8,6 +8,212 @@ tags:
 ---
 
 
+<big>股票问题</big>
+::: right
+📦 怎么尽可能在有限空间的背包里尽可能多地装货
+- 121
+- 123
+- 309
+- 122
+- 188
+- 714
+:::
+
+定义一个三维数组, `dp[i][j][k]`代表第`i`天第`j`次交易(先买再卖算一次), 最后手里是否持有股票`k`所持有的总利润
+```
+dp[i][j][0] = max(dp[i-1][j][0], dp[i-1][j][1] + prices[i])
+dp[i][j][1] = max(dp[i-1][j][1], dp[i-1][j-1][0] - prices[i])
+```
+- 第$i$天我没有持有股票, 要么是我昨天就没有持有, 今天继续闲着; 要么是我昨天持有股票, 今天卖掉, 所以我今天没有持有股票了
+- 第$i$天我持有股票, 要么我昨天就持有着股票, 今天继续闲着; 要么是我昨天没有持有股票, 今天买入一股, 今天才持有股票
+
+::::: tabs type: card
+:::: tab 最佳时机 I
+## 121. Best Time to Buy and Sell Stock
+__问题__： 可以在某一天购入一股, 之后卖掉, 求最大收益
+```
+Input: [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+```
+::: details
+```
+因为只能进行一次交易, 因为dp[n][0][0] = 0(一次交易没发生, 且没有购买行为),
+所以状态转移同交易次数无关
+
+dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i]) 
+            = max(dp[i-1][1], 0-prices[i])       
+```
+同样我们发现状态转移只和昨天是否持有股票有关系, 因而可以进一步用两个变量来代替数组
+```python
+"""其实直接用当前数字减去之前遇到的最小数字即可
+dp0: 此刻手里没有股票的最大收益
+dp1: 此刻手里有股票的最大收益
+"""
+def maxProfit(self, prices: List[int]) -> int:
+    dp0, dp1 = 0, -float('inf')
+    for price in prices:
+        dp0 = max(dp0, dp1+price)
+        dp1 = max(dp1, -price)
+    return dp0
+```
+:::
+::::
+:::: tab 最佳时机 II
+## 122.Best Time to Buy and Sell Stock II 
+__问题__： 可以进行多次交易
+```
+Input: [7,1,5,3,6,4]
+Output: 7
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4. 
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+```
+::: details
+```
+在这道题中, k是正无穷的, 那么就可以认为 k 和 k - 1 是一样的, 因此第二个维度没意义
+
+dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i]) 
+```
+同样我们发现状态转移只和昨天是否持有股票有关系, 因而可以进一步用两个变量来代替数组, 但是在更新第二个变量的时候用的是第一个变量更新前的结果
+```python
+def maxProfit(self, prices: List[int]) -> int:
+    dp0, dp1 = 0, -float('inf')
+    for price in prices:
+        old_dp0 = dp0
+        dp0 = max(dp0, dp1+price)
+        dp1 = max(dp1, old_dp0-price)
+    return dp0
+```
+:::
+::::
+:::: tab 最佳时机 III
+## 123. Best Time to Buy and Sell Stock III
+__问题__： 最多两次交易
+```
+Input: [3,3,5,0,0,3,1,4]
+Output: 6
+Explanation: Buy on day 4 (price = 0) and sell on day 6 (price = 3), profit = 3-0 = 3. 
+Then buy on day 7 (price = 1) and sell on day 8 (price = 4), profit = 4-1 = 3.
+You can only do 2 trades !
+```
+::: details
+```
+在这道题中, 交易次数有限制并且 j = 2, 所以要考虑第二个维度(穷举k=2,k=1次交易的情况)
+
+dp[i][j][0] = max(dp[i-1][j][0], dp[i-1][j][1] + prices[i])
+dp[i][j][1] = max(dp[i-1][j][1], dp[i-1][j-1][0] - prices[i]) 
+```
+用二维数组避免出错, 主要就是注意一下买的时候, 是否已经超过两次交易了, 然后状态更新的顺序从后往前
+```python
+def maxProfit(self, prices: List[int]) -> int:
+    # dp: time x trade
+    dp0 = [[0]*3 for _ in range(2)]
+    dp1 = [[-float('inf')]*3 for _ in range(2)]
+    for price in prices:
+        for j in range(2,0,-1):
+            dp0[1][j] = max(dp0[0][j], dp1[0][j]+price)
+            dp1[1][j] = max(dp1[0][j], dp0[0][j-1]-price)
+            dp0[0][j],dp1[0][j] = dp0[1][j],dp1[1][j]
+    return dp0[1][2]
+```
+:::
+::::
+:::: tab 最佳时机 IV
+__问题__： 最多$k$次交易
+```
+Input: [2,4,1], k = 2
+Output: 2
+Explanation: Buy on day 1 (price = 2) and sell on day 2 (price = 4), profit = 4-2 = 2.
+```
+::: details
+和上面那道题的模板一模一样, 只是要注意有个special case, $K$的值非常大, 导致内存超出, 解决的办法就是加约束条件： $K \leq N/2$, 因为每次交易要至少两个阶段才能完成
+```python
+def maxProfit(self, k: int, prices: List[int]) -> int:
+    if not prices: return 0
+    n = len(prices); max_k = min(k, n//2)
+    dp = [[[0]*2 for _ in range(max_k+1)] for _ in range(n)]
+    for i in range(n):
+        for k in range(max_k, 0, -1):
+            if i == 0:       #特殊情况处理一下
+                dp[i-1][k][1] = -float('inf')   
+            dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + prices[i])
+            dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0] - prices[i])
+    return dp[-1][-1][0]
+```
+:::
+::::
+:::: tab 最佳时机 V
+## 309. Best Time to Buy and Sell Stock with Cooldown
+__问题__： 在买入之前必须至少休息一天, 还是无限交易次数
+```
+Input: [7,1,5,1,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit =6-1 = 5. 
+cannot sell on day 3 and buy again on day 4
+```
+::: details
+```
+在这道题中, 交易次数无限制, 所以第二个维度还是没有意义
+然后cooldown的话, 限制了买入行为, 即必须从dp[i-2][0]那里获得之前无持有状态的最佳利润
+
+dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+dp[i][1] = max(dp[i-1][1], dp[i-2][0] - prices[i]) 
+```
+无持有必须保存$t-1$和$t-2$的信息, 而持有仅须保存$t-1$的信息
+```python
+"""比如 input = [1,2,3,0,2]
+
+>> p=1      dp0=[0,0,0]     dp1=-1       
+>> p=2      dp0=[0,0,1]     dp1=-1
+>> p=3      dp0=[0,1,2]     dp1=-1    每次把dp0[1,2]搬运到dp0[0,1]
+>> p=0      dp0=[1,2,2]     dp1= 1
+>> p=2      dp0=[2,2,?]     dp1= 1    ?=3, 因为第1,2天完成一次, 第4天已经可以继续买了
+"""
+def maxProfit(self, prices: List[int]) -> int:
+    dp0 = [0] * 3
+    dp1 = -float('inf')
+    for i, price in enumerate(prices):
+        dp0[1], dp0[0] = dp0[2], dp0[1]
+        dp0[2] = max(dp0[1], dp1 + price)
+        dp1 = max(dp1, dp0[0] - price)
+    return dp0[-1]
+```
+:::
+::::
+:::: tab 最佳时机 VI
+## 714. Best Time to Buy and Sell Stock with Transaction Fee
+__问题__： 没有冷冻期, 但是每次交易都要交一个手续费
+```
+Input: [1,2,4,0,2], fee=2
+Output: 1
+Explanation: Buy on day 1 and sell on day 3, get profit of 1
+```
+::: details
+```
+在这道题中, 交易次数无限制, 所以第二个维度还是没有意义
+有手续费相当于卖的时候多交一笔钱, 注意fee加到上面会存在dp1不能再减小的问题
+
+dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+dp[i][1] = max(dp[i-1][1], dp[i-1][0] - prices[i]-fee) 
+```
+用两个变量来代替数组, 在更新第二个变量的时候用的是第一个变量更新前的结果
+```python
+def maxProfit(self, prices: List[int], fee: int) -> int:
+    dp0, dp1 = 0, -float('inf')
+    for price in prices:
+        old_dp0 = dp0
+        dp0 = max(dp0, dp1+price)
+        dp1 = max(dp1, old_dp0 - price - fee)
+    return dp0
+```
+:::
+::::
+:::::
+
+---
+
 <big>背包问题</big>
 ::: right
 📦 怎么尽可能在有限空间的背包里尽可能多地装货
@@ -219,3 +425,6 @@ def minimumMoves(self, A: List[int]) -> int:
 :::
 
 ![](~@assets/lc-1246.png#center)
+
+
+
