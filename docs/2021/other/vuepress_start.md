@@ -9,7 +9,7 @@ tags:
 ---
 
 ::: tip
-本来gitbook用的挺好的，有些需要定制的功能找到到API，所以转向了开放度更高的Vue. 利用这篇博客学习搭建`Vuepress`的技术
+一个由VuePress生成的网站，它是用Vue、Vue-router、Webpack以及利用服务端渲染(SSR)而来, 它不仅支持Vue组件的写法, 还内置Stylus语法
 :::
 
 <!-- more -->
@@ -25,7 +25,7 @@ $$\begin{aligned}
 
 ## 支持MultiTabs操作
 
-:::: tabs
+:::: tabs type: card
 ::: tab python
 ```python
 print("Python code example")
@@ -85,8 +85,11 @@ public static void main(String args[]){
 使用任何在`.vuepress/components`下安装的组件
 ```md
 <Badge text="beta" type="warning"/>
+Vue <Badge text="2.5.0+"/> 
+Vuex <Badge text="beta" type="warn" vertical="top"/> 
+Vue-Resource<Badge text="废弃" vertical="middle" type="error"/>
 ```
-<Badge text="beta" type="warning"/>
+<Badge text="beta" type="warning"/> Vue <Badge text="2.5.0+"/> Vuex <Badge text="beta" type="warn" vertical="top"/> Vue-Resource<Badge text="废弃" vertical="middle" type="error"/>
 :::
 ::: tab 自定义组件
 ```md
@@ -101,3 +104,14 @@ public static void main(String args[]){
 
 <!-- <test-vue/> -->
 
+
+## 链接
+
+所有`.md`文件中的标题(例如h2和h3)都自动添加了锚点链接, 可以根据与当前文件相对路径的关系编辑跳转链接, 例如在这里我们要跳回到[本文开头](./vuepress_start/#支持Tex语法)
+
+
+
+
+## 参考资料
+
+[1] [Vuepress](https://wangtunan.github.io/blog)

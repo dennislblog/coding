@@ -325,6 +325,9 @@ minimize(lambda x: -f(x), (0.1,), bounds=((0,1),))['x'][0]  # => 1.0
 ## `Pyomo` 基本用法
 !!!include(./python/pyomo.md)!!!
 
+## `Reglex`基本用法
+!!!include(./python/regex.md)!!!
+
 ## 参考
 
 [1] [Cython 基本用法 @陈乐群](https://zhuanlan.zhihu.com/p/24311879)

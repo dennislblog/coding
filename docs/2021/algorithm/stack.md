@@ -60,6 +60,43 @@ def validateStackSequences(self, pushed: List[int], popped: List[int]) -> bool:
 ::::
 :::::
 
+---
+
+<big> 队列：先进先出 </big>
+
+::::: tabs type: card
+:::: tab 优势洗牌
+## 870. Advantage Shuffle
+__问题__： 如何安排A的各个数字，使得对于每个位置$A[i]>B[i]$的情况最多
+
+__例子__： 其实就是田忌赛马问题, 怎么安排对战顺序, 让A赢得更多
+```
+Input: A = [12,24,8,32], B = [13,25,32,11]
+Output: [24,32,8,12]
+```
+::: details
+使用双向队列, 遍历A, 每次出动自己最弱的马(`A.popleft()`), 如果这个马能战胜B中最弱的马(`B[0]`), 则就用这匹马对战, 否则用这匹马去斗B最强的马(`B.pop()`)
+```python
+def advantageCount(self, A: List[int], B: List[int]) -> List[int]:
+    A = collections.deque(sorted(A))
+    B = collections.deque(sorted((b,i) for i,b in enumerate(B)))
+    n = len(A); res = [-1] * n
+    for _ in range(n):
+        a, b = A.popleft(), B[0][0]
+        if a > b:
+            _, i = B.popleft()
+        else:
+            _, i = B.pop()
+        res[i] = a
+    return res
+```
+:::
+![](~@assets/lc-870.png#center)
+::::
+:::::
+
+---
+
 <big> 单调栈问题 </big>
 
 ::: right
@@ -217,8 +254,6 @@ def findKthLargest(self, nums, k) -> int:
 ```
 :::
 ::::
-:::::
-
 <center>
     
 ![快速排序](~@assets/lc-quicksort.gif#left)
@@ -226,6 +261,9 @@ def findKthLargest(self, nums, k) -> int:
 ![归并排序](~@assets/lc-mergesort.gif#left)
 
 </center>
+:::::
+
+---
 
 <big>括号问题</big>
 
@@ -329,6 +367,8 @@ def scoreOfParentheses(self, S: str) -> int:
 ![有效括号](~@assets/lc-32.png#center)
 :::::::
 
+---
+
 <big> 寻找子序并保存原来顺序 </big>
 
 ::: right
@@ -399,6 +439,8 @@ __例子__： `nums1 = [3, 4, 6, 5], nums2 = [9, 1, 2, 5, 8, 3], k = 5`, 拼接�
 - 难点在于怎么确定从`nums1`取多少个, 从`nums2`取多少个, 使得加起来等于`k`, 只想到了暴力解法, k1=0,1,2,3,4,5, k2=5-k1, 然后分别取, 最后合并
 ::::::
 ::::::: 
+
+---
 
 <big> 优先级队列 </big>
 ::: right

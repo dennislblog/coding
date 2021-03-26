@@ -174,3 +174,72 @@ def shortestPathBinaryMatrix(self, grid: List[List[int]]) -> int:
 :::
 
 ![1091. Shortest Path in Binary Matrix](~@assets/lc-1091.png#center)
+
+
+
+## 1091. Shortest Path in Binary Matrix 
+
+**问题**：上面一条边和左边一条边代表的是太平洋，右边一条边和下边一条边代表的是大西洋。现在告诉你水往低处流，问哪些位置的水能同时流进太平洋和大西洋？
+
+__例子__： 答案是列出矩阵中能同时流入太平洋和大西洋的格子的坐标
+
+```
+Pacific ~   ~   ~   ~   ~ 
+   ~  1   2   2   3  (5) *
+   ~  3   2   3  (4) (4) *
+   ~  2   4  (5)  3   1  *
+   ~ (6) (7)  1   4   5  *
+   ~ (5)  1   1   2   4  *
+      *   *   *   *   * Atlantic
+```
+
+:::: tabs type: card
+思路就是从陆地边缘开始疯狂试探便可
+::: tab dfs
+```python
+def pacificAtlantic(self, matrix: List[List[int]]) -> List[List[int]]:
+    if not matrix: return []
+    m, n = len(matrix), len(matrix[0])
+    pac, alt = set(), set()
+    stack = [(i,0) for i in range(m)] + [(0,j) for j in range(1, n)]
+    while stack:
+        i, j = stack.pop()
+        pac.add((i,j))
+        for ni, nj in ((i,j-1),(i,j+1),(i-1,j),(i+1,j)):
+            if 0 <= ni < m and 0 <= nj < n and matrix[ni][nj] >= matrix[i][j] and not (ni,nj) in pac:
+                stack.append((ni,nj))
+    stack = [(i,n-1) for i in range(m)] + [(m-1,j) for j in range(n-1)]
+    while stack:
+        i, j = stack.pop()
+        alt.add((i,j))
+        for ni, nj in ((i,j-1),(i,j+1),(i-1,j),(i+1,j)):
+            if 0 <= ni < m and 0 <= nj < n and matrix[ni][nj] >= matrix[i][j] and not (ni,nj) in alt:
+                stack.append((ni,nj))
+    return list(pac & alt)
+```
+:::
+::: tab bfs
+```python
+def pacificAtlantic(self, matrix: List[List[int]]) -> List[List[int]]:
+    if not matrix: return []
+    
+    def bfs(cover):
+        q = collections.deque(cover)
+        while q:
+            i, j = q.popleft()
+            cover.add((i,j))
+            for ni, nj in ((i-1,j),(i+1,j),(i,j-1),(i,j+1)):
+                if 0<=ni<m and 0<=nj<n and matrix[ni][nj] >= matrix[i][j] and not (ni,nj) in cover:
+                    q.append((ni,nj))
+        
+    m, n = len(matrix), len(matrix[0])
+    pac, alt = set(), set()
+    for i in range(m):
+        pac.add((i,0)); alt.add((i,n-1))
+    for j in range(n):
+        pac.add((0,j)); alt.add((m-1,j))
+    bfs(pac); bfs(alt)
+    return list(pac & alt)
+```
+:::
+::::

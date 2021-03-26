@@ -118,6 +118,15 @@ plt.rcParams['figure.figsize'] = 10, 3
 np.set_printoptions(precision = 4)
 # 或者直接 %precision 4
 ```
+## Python处理遍历失败
+```python
+"""在for循环完整完成后才执行else, 如果中途跳出循环, 则一并跳过else语句
+"""
+for i in range(n):
+    if f(i) >= threshold: break
+else:
+    print("all below threshold")
+```
 
 ## Jupyter自动补全
 Jupyter lab中的TAB键失去作用, [参考这里](https://stackoverflow.com/questions/44186370/kernel-taking-too-long-to-autocomplete-tab-in-jupyter-notebook)

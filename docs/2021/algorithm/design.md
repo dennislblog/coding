@@ -315,6 +315,34 @@ class MyHashMap:
 :::
 ::::
 ![](~@assets/lc-705.png#center)
+:::: tab 设计地铁打票
+__问题__：请你实现一个类 UndergroundSystem, 实现`1. checkIn(id, start_station, time)`, 以及`2. checkOut(id, end_station, t)`, 以及`getAverageTime(start, end)`计算所有从始发站到终点站的平均花费时间. 
+
+::: details
+最后我需要一个存储`key = (start, end), value = time duration`的字典, 而`checkout输入只包含了 end_station 和 end_time`, 所以自然我需要另一个字典根据`id`记录`start_station 和 start_time`
+```python
+# obj = UndergroundSystem()
+# obj.checkIn(id,stationName,t)
+# obj.checkOut(id,stationName,t)
+# param_3 = obj.getAverageTime(startStation,endStation)
+
+def __init__(self):
+    self.psg = dict()
+    self.time = collections.defaultdict(list)
+
+def checkIn(self, id: int, stationName: str, t: int) -> None:
+    self.psg[id] = (stationName, t)
+
+def checkOut(self, id: int, stationName: str, t: int) -> None:
+    start, t0 = self.psg[id]
+    self.time[(start, stationName)].append(t - t0)
+
+def getAverageTime(self, startStation: str, endStation: str) -> float:
+    times = self.time[(startStation, endStation)]
+    return sum(times)/len(times)
+```
+:::
+::::
 :::::
 
 ---
@@ -345,3 +373,60 @@ class Codec:
 ```
 :::
 ::::
+
+---
+
+<big>字符串</big>
+::: right
+📝 字符串的一些题目总结
+:::
+
+## 966. Vowel Spellchecker
+
+:::: tip
+__问题__： 现在给了一个单词字典，给出了一堆要查询的词，要返回查询结果。查询的功能如下：
+
+1. 如果字典里有现在的单词，就直接返回；
+2. 如果不满足1，那么判断能不能更改要查询单词的某些大小写使得结果在字典中，如果字典里多个满足条件的，就返回第一个；
+3. 如果不满足2，那么判断能不能替换要查询单词的元音字符成其他的字符使得结果在字典中，如果字典里多个满足条件的，就返回第一个；
+4. 如果不满足3，返回查询的结果是空字符串。
+
+__例子__： 返回`wordlist`里的内容
+```
+Input: 
+    wordlist = ["KiTe","kite","hare","Hare"], 
+    queries = ["kite","Kite","KiTe","Hare","HARE","Hear","hear","keti","keet","keto"]
+
+Output:
+    ["kite","KiTe","KiTe","Hare","hare","","","KiTe","","KiTe"]
+```
+
+::: details
+- 首先，判断有没有相同的单词，这个很好办，直接使用set
+- 把字符转换为全部小写, 看是否在`wordlist`里有对应的单词, 要注意由于需要返回原`wordlist`中的单词, 且优先返回第一个出现的, 因此我们在建立`小写->原单词`的字典时, 从后往前扫描, 因为可能出现两个单词小写化后一模一样
+- 最后是元音转换, 把所有元音都换成符号`#`, 同样也是从后往前, 因为要返回原`wordlist`中第一个匹配的
+
+```python
+def spellchecker(self, wordlist: List[str], queries: List[str]) -> List[str]:
+    wordset = set(wordlist); res = []
+    wordmap = {w.lower(): w for w in wordlist[::-1]}
+    vowelmap = {re.sub("[aeiou]","#",w.lower()): w for w in wordlist[::-1]}
+    for q in queries:
+        if q in wordset:
+            res.append(q)
+        else:
+            q = q.lower()
+            if q in wordmap:
+                res.append(wordmap[q])
+            else:
+                q = re.sub("[aeiou]","#",q.lower())
+                if q in vowelmap:
+                    res.append(vowelmap[q])
+                else:
+                    res.append("")
+    return res
+```
+:::
+::::
+
+
