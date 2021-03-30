@@ -518,31 +518,6 @@ def findKthPositive(self, arr: List[int], k: int) -> int:
 
 ---
 
-## 3. Longest Substring Without Repeating Characters
-
-**问题**： 给定一个字符串(例如`s='abcdfdc'`)，请你找出其中不含有重复字符的最长子串的长度(例如这里就是`abcdf`, 答案是5)。
-
-::: details
-第一遍做的时候以为只有26个字母，结果还要考虑各种符号和数字，因此这里用上字典
-- 滑动窗口，当没有重复字母的时候，移动右边界，当有重复字母的时候，移动左边界
-- 这里左边界更新规则要取`max`是因为像 `pfdpppf`在遇到第二个`f`的时候，左边界不应该往后退(左边界应该一直往前走)
-```python                            
-def lengthOfLongestSubstring(self, s: str) -> int:
-    m_ = dict(); 
-    left, right, res = 0, 0, 0
-    for right, cur in enumerate(s):
-        if cur in m_:
-            left = max(m_[cur]+1, left)
-        m_[cur] = right
-        res = max(res, right - left + 1)
-    return res
-```
-:::
-
-![3. Longest Substring Without Repeating Characters](~@assets/lc-3.png#center)
-
----
-
 ## 88. Merge Sorted Array
 
 **问题**： 把两个`有序`的数组合并，把结果放到`nums1`中去。 注意这里`nums1`是有额外存储空间的, 比如`nums1 = [1,2,3,0,0,0,0]`, `nums2 = [2,5,6,8]`。 另外输入中还包括`nums1`和`nums2`初始元素个数(m=3 and n=4)
@@ -662,3 +637,168 @@ def minOperations(self, nums: List[int], x: int) -> int:
 :::
 ::::
 :::::
+
+---
+
+<big>字符串</big>
+::: right
+📝 字符串的一些题目总结
+:::
+
+## 966. Vowel Spellchecker
+
+:::: tip 元音拼写检查器
+__问题__： 现在给了一个单词字典，给出了一堆要查询的词，要返回查询结果。查询的功能如下：
+
+1. 如果字典里有现在的单词，就直接返回；
+2. 如果不满足1，那么判断能不能更改要查询单词的某些大小写使得结果在字典中，如果字典里多个满足条件的，就返回第一个；
+3. 如果不满足2，那么判断能不能替换要查询单词的元音字符成其他的字符使得结果在字典中，如果字典里多个满足条件的，就返回第一个；
+4. 如果不满足3，返回查询的结果是空字符串。
+
+__例子__： 返回`wordlist`里的内容
+```
+Input: 
+    wordlist = ["KiTe","kite","hare","Hare"], 
+    queries = ["kite","Kite","KiTe","Hare","HARE","Hear","hear","keti","keet","keto"]
+
+Output:
+    ["kite","KiTe","KiTe","Hare","hare","","","KiTe","","KiTe"]
+```
+
+::: details
+- 首先，判断有没有相同的单词，这个很好办，直接使用set
+- 把字符转换为全部小写, 看是否在`wordlist`里有对应的单词, 要注意由于需要返回原`wordlist`中的单词, 且优先返回第一个出现的, 因此我们在建立`小写->原单词`的字典时, 从后往前扫描, 因为可能出现两个单词小写化后一模一样
+- 最后是元音转换, 把所有元音都换成符号`#`, 同样也是从后往前, 因为要返回原`wordlist`中第一个匹配的
+
+```python
+def spellchecker(self, wordlist: List[str], queries: List[str]) -> List[str]:
+    wordset = set(wordlist); res = []
+    wordmap = {w.lower(): w for w in wordlist[::-1]}
+    vowelmap = {re.sub("[aeiou]","#",w.lower()): w for w in wordlist[::-1]}
+    for q in queries:
+        if q in wordset:
+            res.append(q)
+        else:
+            q = q.lower()
+            if q in wordmap:
+                res.append(wordmap[q])
+            else:
+                q = re.sub("[aeiou]","#",q.lower())
+                if q in vowelmap:
+                    res.append(vowelmap[q])
+                else:
+                    res.append("")
+    return res
+```
+:::
+::::
+
+## 3. Longest Substring Without Repeating Characters
+
+:::: tip 无重复字符的最长子串
+**问题**： 给定一个字符串(例如`s='abcdfdc'`)，请你找出其中不含有重复字符的最长子串的长度(例如这里就是`abcdf`, 答案是5)。
+
+::: details
+第一遍做的时候以为只有26个字母，结果还要考虑各种符号和数字，因此这里用上字典
+- 滑动窗口，当没有重复字母的时候，移动右边界，当有重复字母的时候，移动左边界
+- 这里左边界更新规则要取`max`是因为像 `pfdpppf`在遇到第二个`f`的时候，左边界不应该往后退(左边界应该一直往前走)
+```python                            
+def lengthOfLongestSubstring(self, s: str) -> int:
+    m_ = dict(); 
+    left, right, res = 0, 0, 0
+    for right, cur in enumerate(s):
+        if cur in m_:
+            left = max(m_[cur]+1, left)
+        m_[cur] = right
+        res = max(res, right - left + 1)
+    return res
+```
+:::
+![3. Longest Substring Without Repeating Characters](~@assets/lc-3.png#center)
+::::
+
+## 647. Palindromic Substrings
+
+::::: tip 判断子字符串有多少个回文
+```
+Input: "aaba"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aba", "b".
+```
+
+:::: tabs type: card
+::: tab 暴力解法
+```python
+## 对每一个长度的子字符串都看看是否是回文, O(N**3)
+def countSubstrings(self, s: str) -> int:
+    count = 0
+    for i in xrange(len(s)):
+        for j in xrange(i, len(s)):
+            if s[i:j + 1] == s[i:j + 1][::-1]:
+                count += 1
+    return count
+```
+:::
+::: tab 中心向四周
+```python
+## 以每一个空隙为中心, 向两边辐射, 同时增加有效回文的计数, 把所有结果加起来
+def countSubstrings(self, s: str) -> int:
+    def helper(i,j,ret=0):
+        while 0 <= i <= j < n:
+            if s[i] != s[j]: break
+            i -= 1; j += 1; ret += 1
+        return ret
+    n = len(s); cnt = 0 
+    for i in range(n):
+        cnt += helper(i,i) + helper(i-1,i)
+    return cnt
+```
+:::
+::: tab 动态规划
+```python
+## dp[i][j]记录s[i:j+1]是否是回文
+def countSubstrings(self, s: str) -> int:
+    n = len(s); cnt = 0
+    dp = [[0] * n for _ in range(n)]
+    for size in range(1, n+1):
+        for i in range(n-size+1):
+            j = i + size - 1
+            if i == j: 
+                dp[i][j] = 1
+            elif j == i + 1 and s[i] == s[j]: 
+                dp[i][j] = 1
+            elif s[i] == s[j] and dp[i+1][j-1]:
+                dp[i][j] = 1
+            if dp[i][j]:   
+                cnt += 1
+    return cnt
+```
+:::
+::::
+:::::
+
+## 423. Reconstruct Original Digits from English 
+
+:::: tip 根据一个打乱了的英文表示的字符串以升序重构出阿拉伯数字
+```
+Input:   "owoztneoer"
+Output:  "012"
+Explain: input由zero, one, two构成, 不会有剩余字符, input一定是valid
+```
+::: details
+```python
+## 没啥可说的, 找规律, 统计每一个出现的频率, cnt[i]代表数字i所代表的字符串出现的频率
+def originalDigits(self, s: str) -> str:
+    cnt = dict()
+    cnt[0] = s.count('z'); cnt[2] = s.count('w'); cnt[4] = s.count('u')
+    cnt[6] = s.count('x'); cnt[8] = s.count('g')
+    cnt[3] = s.count('h') - cnt[8]; cnt[5] = s.count('f') - cnt[4]
+    cnt[7] = s.count('v') - cnt[5]; cnt[1] = s.count('o') - cnt[0] - cnt[2] - cnt[4]
+    cnt[9] = (s.count('n') - cnt[7] - cnt[1]) >> 1
+    res = ""
+    for i in range(10):
+        res += cnt[i] * str(i)
+    return res
+```
+:::
+::::

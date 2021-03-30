@@ -110,7 +110,20 @@ Vue-Resource<Badge text="废弃" vertical="middle" type="error"/>
 所有`.md`文件中的标题(例如h2和h3)都自动添加了锚点链接, 可以根据与当前文件相对路径的关系编辑跳转链接, 例如在这里我们要跳回到[本文开头](./vuepress_start/#支持Tex语法)
 
 
+## 比较
 
+<pros-cons
+  intro="There are a couple of things we need to cover:"
+  :good="[
+    'Documentation Theme Based on Vue.',
+    'Use of markdown-it plugins.',
+    'Static Site Generator.'
+  ]"
+  :bad="[
+    'Vuepress is not very stable yet',
+    'Can be complex to configure',
+  ]"
+/>
 
 ## 参考资料
 
