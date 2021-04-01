@@ -13,6 +13,7 @@ scripts
 /docs/.vuepress
 /docs/assets
 /docs/include
+/docs/codes
 private*
 archive
 thesis

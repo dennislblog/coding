@@ -34,3 +34,7 @@ yarn deploy
 [1] [几乎刷完了力扣所有的堆题，我发现了这些东西。。。](https://lucifer.ren/blog/)
 
 [2] [LeetCode问题一览](https://leetcode.jp/problems.php)
+
+## ToDo
+
+[1] 完成递增[子序题](https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/chuan-shang-yi-fu-wo-jiu-bu-ren-shi-ni-liao-lai-li/)

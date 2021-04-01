@@ -17,9 +17,49 @@ publish: true
 
 <!-- more -->
 
+## `Setup`基本用法
+::: tip
+输入`pip install -e .`, 在当前路径下安装`setup.py`, 且模式为`edit`(意思就是可以修改不需要重新安装)
+```python
+"""file structure
+
+example_project/
+├── exampleproject/      Python package with source code.
+│   ├── __init__.py      Make the folder a package.
+│   └── example.py       Example module.
+└── README.md            README with info of the project.
+"""
+setuptools.setup(
+    name="example",                        # 通过 import name 被导入的名字
+    version="0.0.1",                       # 通常在 name.__init__.py 中以 __version__ = "0.0.1" 的形式被定义
+    author="Xiang Liu",                    
+    author_email='dennisl@udel.edu',
+    license='MIT License',
+    description="Setting up a python package",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://blog.godatadriven.com/setup-py",
+    packages=setuptools.find_packages(include=[]),  # 默认情况只安装name所定义的包, 子包不会被安装
+    install_requires=[
+        'cycler==0.10.0',                           # 安装依赖的包
+    ],
+    extras_require={'plotting': ['matplotlib>=2.2.0', 'jupyter'],
+                    ":python_version<'3.5'": ['scandir']},  # 条件触发才安装的包
+    entry_points={                                          # 输入my-command, 执行后面那个
+        'console_scripts': ['my-command=exampleproject.example:main']
+    },
+    setup_requires=['pytest-runner', 'flake8'],             # 仅在setup时需要的依赖
+    tests_require=['pytest'],                               # 仅在test时需要的依赖
+    package_data={'exampleproject': ['data/schema.json']}   # 这个是为了加载非Python文件到pip包?
+)
+```
+
+参考这里, [a practical guide to using setup.py](https://godatadriven.com/blog/a-practical-guide-to-using-setup-py/)
+:::
+
 ## `Numpy` 基本用法
 ::::: tip Numpy常用方法
-:::: tab type: card
+:::: tabs type: card
 ::: tab meshgrid
 如何制作一个半边轮廓图
 ```python
@@ -119,7 +159,7 @@ def naive_dot(np.ndarray[DTYPEf_t, ndim=2] a, np.ndarray[DTYPEf_t, ndim=2] b):
 :::::
 
 - 我们现在可以通过编译`.pyx`, 得到可以被调用的`.pyd`文件, 和一个附带的`c`文件
-    ```cmd
+    ```bash
     python setup.py develop           #或者 python setup.py build_ext --inplace
     ```
     ::: details setup.py
