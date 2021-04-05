@@ -137,8 +137,10 @@ class BSTIterator:
 
 __例子__: 例如$X = 2, Y = 3$， 我们有 $2 \rightarrow 4 \rightarrow 3$ 两步, 返回答案$2$
 
-::: details
+::: tip
 要让$X$做乘2或者减1尽可能接近$Y$, 反过来就是$Y$尽量多的除以2, 直到$Y$比$X$还小的时候, 就只能不断加1得到$X$
+:::
+
 ```python
 def brokenCalc(self, X: int, Y: int) -> int:
     res = 0
@@ -148,7 +150,6 @@ def brokenCalc(self, X: int, Y: int) -> int:
         res += 1
     return res + (X-Y)
 ```
-:::
 ::::
 :::: tab set应用
 ## 575. Distribute Candies
@@ -166,6 +167,49 @@ def distributeCandies(self, candyType: List[int]) -> int:
     n = len(candyType); distinct = set(candyType)
     return min(n//2, len(distinct))
 ```
+::::
+:::: tab 戳印序列
+## 936. Stamping The Sequence
+
+**问题**: 通过在`????????`上面不断盖戳`stamp`, 使其变成`target`
+
+```bash
+输入：stamp = "abca", target = "aabcaca"
+输出：[3,0,1]
+解释：即首先变成"aababca", 然后在第1个位置盖一个, 变成"abcabca", 最后在第二个位置, 变成"aabcaca"
+```
+::: tip
+逆向思维, 如果`target = ababc`都变成了`target = ?????`就代表成功, 每次从左到右遍历, 如果找不到可以被替换的, 且`target`还不全是`?`的时候, 返回`[]`(没有答案)
+
+注意最后要将答案逆序因为我们是逆向思考, 因为后面盖的章会覆盖前面盖的章
+:::
+
+```python
+def movesToStamp(self, stamp: str, target: str) -> List[int]:
+    def check(i):
+        res = 0
+        for j in range(n_stm):
+            if target[i+j] == '?': 
+                continue
+            elif target[i+j] == stamp[j]:
+                res += 1
+            else:
+                return 0
+        return res
+        
+    res = []; tot = 0; target = list(target)
+    n_stm, n_tar = len(stamp), len(target)
+    while tot < n_tar:
+        pre_tot = tot
+        for i in range(n_tar - n_stm + 1):
+            can_replace = check(i)
+            if can_replace != 0:
+                target[i:i+n_stm] = ['?'] * n_stm
+                tot += can_replace; res.append(i)
+        if pre_tot == tot: return []
+    return res[::-1]
+```
+::::
 :::::
 
 ---
