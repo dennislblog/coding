@@ -101,7 +101,7 @@ find . -type d -empty -delete      #将内容为空的子文件夹删除
 ```bash
 workon imitate & jupyter nbconvert --to html *.ipynb
 
-# pip 换源
+# pip 换源 (Windows配置信息在pip.ini里)
 pip config set global.index-url http://pypi.python.org/simple/
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple
 
@@ -308,4 +308,24 @@ pip install virtualenv && pip install virtualenvwrapper
 '
 export WORKON_HOME=$HOME/.virtualenvs
 source ~/anaconda3/bin/virtualenvwrapper.sh
+```
+
+## WRDS和GCP之间传递文件
+```bash
+:'
+paramiko有窗口大小的问题, 采用rsync方法(速度不要太快)
+在此之前, 我还把所有CSV文件单独转换成了ZIP
+#!/usr/bin/env python3
+import sys
+from pathlib import Path
+from zipfile import ZipFile
+
+src_dir, dest_dir = map(Path, sys.argv[1:])
+for filename in src_dir.glob('*.csv'): # enumerate all csv-files in the src folder
+    # zip each file individually
+    with ZipFile(str(dest_dir / (filename.stem + '.zip')), 'w') as archive:
+        archive.write(str(filename), arcname=filename.name)
+'
+yum install rsync -y
+rsync -zrP dennislx@wrds-cloud.wharton.upenn.edu:/scratch/udel/dennislx/data.zip ~/notebook/wrds/data.zip
 ```

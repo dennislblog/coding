@@ -125,6 +125,44 @@ Vue-Resource<Badge text="废弃" vertical="middle" type="error"/>
   ]"
 />
 
+## VUE在线预览
+
+```vue live
+<template>
+    <div>{{ label }}</div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            label: "标题"
+        };
+    }
+};
+</script>
+```
+
+
+## 时间线
+
+<timeline title="标题">
+    <timeline-item>第一项</timeline-item>
+    <timeline-item bg-color="#A71490">第二项
+      <p class="append">补充项在这里写</p>
+      <p class="append">补充项在这里写</p>
+    </timeline-item>
+</timeline>
+
 ## 参考资料
 
 [1] [Vuepress](https://wangtunan.github.io/blog)
+
+
+
+<!-- 
+建站思考
+  1. blog @ saltbo https://saltbo.cn/about.html
+  2. 
+
+ -->

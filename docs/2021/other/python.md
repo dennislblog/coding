@@ -57,11 +57,11 @@ setuptools.setup(
 参考这里, [a practical guide to using setup.py](https://godatadriven.com/blog/a-practical-guide-to-using-setup-py/)
 :::
 
-## `Numpy` 基本用法
-::::: tip Numpy常用方法
+## `Numpy`, `Pandas`, ...
+::::: tip 
 :::: tabs type: card
-::: tab meshgrid
-如何制作一个半边轮廓图
+::: tab Numpy
+- 如何制作一个半边轮廓图
 ```python
 a = np.linspace(a_MIN, a_MAX, xnum)
 a1, a2 = np.meshgrid(a, a)
@@ -74,6 +74,14 @@ ax.contourf(a1, x, y, alpha=0.2)
 ax.clabel(ax.contour(x, x, y, linestyles='dotted'), colors='black')
 ```
 ![](~@assets/meshgrid-explanation.jpg#center)
+:::
+::: tab Pandas
+- stack/unstack区别
+    1. `stack`把多列变成一列, unstack则相反
+    2. pivot指定`index, column, values`
+
+![](~@assets/python_numpy-01.png#half)
+![](~@assets/python_numpy-02.png#half)
 :::
 ::::
 :::::

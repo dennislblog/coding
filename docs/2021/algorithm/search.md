@@ -256,13 +256,22 @@ def maxDistance(self, position: List[int], m: int) -> int:
 ---
 
 <big> 下一个排列 </big>
-::::: tabs type: card
-:::: tab 496
+
+::: right
+⚙️ 123456 -> 123465 -> 123546 -> 123564
+:::
+
+::::: tip
+:::: tabs type: card
+::: warning
+![496. Next Greater Element III](~@assets/lc-496.png#right)
+- 先从后往前找到第一个降序的位置, 然后和后面第一个比这个值大的调换; 最后后面翻转即可
+- 举例来说, &nbsp; "1　　2　　7　　4　　3　　1"
+- 下一个排列 "1　　3　　1　　2　　4　　7"
+:::
+::: tab 下一个排列I
 ## 496. Next Greater Element III
 
-**问题**： 给定`n=123`, 返回第一个比他大的排列, 即`n'=132`
-::: details
-看下面这图就明白了, 先从后往前找到一个升序, 然后和后面第一个比这个值大的调换, 然后后面翻转, ==注意`n=321`要返回`-1`而不是像31题那种返回下一种排列==
 ```python                            
 def nextGreaterElement(self, n: int) -> int:
     
@@ -285,13 +294,9 @@ def nextGreaterElement(self, n: int) -> int:
     return res if 1 <= res <= 2**31 - 1 else -1
 ```
 :::
-::::
-:::: tab 31
-## 31. Next Permutation
+::: tab 下一个排列II
+## 31. Next Greater Element
 
-**问题**： 找到刚好比 `n` 大的 `permutation`. 比如 `n = 123` 输出 `132`, `n=321` 输出`123`
-::: details
-看下面这图就明白了, 先从后往前找到一个升序, 然后和后面第一个比这个值大的调换, 然后后面翻转
 ```python                            
 def nextPermutation(self, nums: List[int]) -> None:
 
@@ -313,7 +318,6 @@ def nextPermutation(self, nums: List[int]) -> None:
 ```
 :::
 ::::
-![496. Next Greater Element III](~@assets/lc-496.png#center)
 :::::
 
 ---
@@ -459,10 +463,17 @@ def findUnsortedSubarray(self, nums: List[int]) -> int:
 
 ## 880. Decoded String at Index
 
-**问题**： 给定一个字符串(比如`s='ha2fs2'`)，这段字符串被转录成`s'='hahafshahafs'`(数字就是重复次数的意思), 然后给定一个`K=4`, 要求你输出转录后第`K`个字符, 这里就是`a`
+> ![880. Decoded String at Index](~@assets/lc-880.png#right)
+> **问题**： 解码字符串, 数字代表代码重复多少次, 
+> - 扫描到第一个`size >= K`的位置
+> - 对`K`取余和判断当下是否是数字
 
-::: details
-先扫描到第一个`size >= K`的地方，看图非常好理解
+```bash
+输入：S = "ha2fs2", K = 4
+输出："a"
+解释：解码S得到"hahafs hhafs", 然后第4个字符是'a'
+```
+
 ```python                            
 def decodeAtIndex(self, S: str, K: int) -> str:
     size = 0 #在 s[i]之前的字母个数
@@ -480,17 +491,25 @@ def decodeAtIndex(self, S: str, K: int) -> str:
         else:            size -= 1
         i -= 1
 ```
-:::
 
-![880. Decoded String at Index](~@assets/lc-880.png#center)
+
 
 ---
 
 ## 1539. Kth Missing Positive Number
 
-**问题**： 给你一个严格升序排列正整数数组(例如`arr=[2,3,4,7]`)和一个整数(例如`k=3`), 答案应该是`6`, 因为正常排序应该是`12345678..`, 第3个缺失的数是`6`
+::: tip 
 
-::: details
+> ![1539. Kth Missing Positive Number](~@assets/lc-1539.png#right)
+> **问题**： 给你一个 严格升序的数组, 找到第$k$个缺失的正整数
+> - 和第[775](https://blog.csdn.net/fuxuemingzhu/article/details/82915149)题很相似, 都是给定一个很强限制的条件
+
+```bash
+输入：arr = [2,3,4,7], k = 3
+输出：6
+解释：正常排序应该是[1,2,3,4,5,6,7,8...], 对比arr缺失了1,5,6,8...所以第3个缺失的是6
+```
+
 方法1： 线性搜索, `arr[i] - (i+1)`代表当前位置前面有多少个缺失值
 ```python                            
 def findKthPositive(self, arr: List[int], k: int) -> int:
@@ -514,16 +533,23 @@ def findKthPositive(self, arr: List[int], k: int) -> int:
 ```
 :::
 
-![1539. Kth Missing Positive Number](~@assets/lc-1539.png#center)
-
 ---
 
 ## 88. Merge Sorted Array
 
-**问题**： 把两个`有序`的数组合并，把结果放到`nums1`中去。 注意这里`nums1`是有额外存储空间的, 比如`nums1 = [1,2,3,0,0,0,0]`, `nums2 = [2,5,6,8]`。 另外输入中还包括`nums1`和`nums2`初始元素个数(m=3 and n=4)
+::: tip
 
-::: details
-双指针, 从后往前遍历, 当 `@i2 > @i1`时, 填入`@i2`, 否则往前移动`i1`, 直到其中一个指针不能移动为止。 有一个地方要注意就是当`i1`比`i2`先走完的时候, `@i2`之前的值要复制到`nums1`里面去, 比如`nums1=[3,6,0,0] and nums2=[1,2]`这种情况, 如果不加最后一行, 返回`[3,6,3,6]`
+> ![88. Merge Sorted Array](~@assets/lc-88.gif#right)
+> **问题**： 将两个有序数组的`nums2`合并到`nums1`中去
+> - 注意这里`nums1`是有额外存储空间的, 比如`nums1 = [1,2,3,0,0,0,0]`, `nums2 = [2,5,6,8]`
+> - 双指针, 从后往前遍历, 往前移动指向较大那个数的指针, 直到有一个指针不能移动为止
+> - 然后把剩下的值复制到`nums1`
+
+```bash
+输入：nums1 = [1,2,3,0,0,0,0], m = 3, nums2 = [2,5,6,8], n = 4
+输出：[1,2,2,3,5,6]
+```
+
 ```python                            
 def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
     i1, i2 = m-1, n-1
@@ -537,7 +563,6 @@ def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
 ```
 :::
 
-![88. Merge Sorted Array](~@assets/lc-88.gif#center)
 
 ---
 
@@ -546,16 +571,21 @@ def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
 ⚙️ 排序 + 双指针从两头往中间搜索
 :::
 
-::::: tabs type: card
-:::: tab 船救人
+::::: tip
+:::: tabs type: card
+::: tab 船救人
 ## 881. Boats to Save People
 
-**问题**： 一条船**最多**坐两个人，同时船有个载重，问最少需要`多少条船`才能装下所有人。 
+> **问题**： 一条船**最多**坐两个人，同时船有个载重，问最少需要**多少条船**才能装下所有人
+> - 一条船只能最多坐两个人, 所以思路和田忌赛马一样, 让重的先坐
+> - 每次先把最重的送走, 能塞进轻的就塞(**一艘船只能坐两人**), 因为轻的人可以和别人挤但重的不行
 
-**例如**： `people=[3,2,1,2]`, 船一次最多`limit=3`, 那么需要至少三艘船才能把人都载过去
+```bash
+输入：people = [3,2,2,1], limit = 3
+输出：3
+解释：3 艘船分别载 (1, 2), (2) 和 (3)
+```
 
-::: details
-一开始想复杂了, 因为没注意一条船只能最多做两个人，其实即使允许坐多人，也应该先排序，但明显比较复杂。 但只说最多两个人就简单了，如果轻的+重的大于船载重, 让重的先坐, 因为轻的人可以和别人挤但重的不行。
 ```python                            
 def numRescueBoats(self, people: List[int], limit: int) -> int:
     people.sort()
@@ -567,13 +597,19 @@ def numRescueBoats(self, people: List[int], limit: int) -> int:
     return res
 ```
 :::
-::::
-:::: tab 盛水容器
+::: tab 盛水容器
 ## 11. Container With Most Water
-__问题__： 图中垂直线代表输入数组`height = [1,8,6,2,5,4,8,3,7]`, 求容器最多能够容纳多少水
+> ![11. Container With Most Water](~@assets/lc-11.png#right)
+> __问题__： 图中垂直线代表输入数组`height = [1,8,6,2,5,4,8,3,7]`, 求容器最多能够容纳多少水
+> - 两头夹逼, 当宽度变小的时候, 我们寻求高度更大的矩形
+> - 比较两端的高度, 优先移动短的那一边, 因为我们要寻求更大面积的矩形
 
-::: details
-两头夹逼, 关键是把握什么时候移动`i`什么时候移动`j`, 当宽变小的时候, 高度我们寻求更大, 因此移动的是当前较矮的那一端
+```bash
+输入：[1,8,6,2,5,4,8,3,7]
+输出：49 
+解释：图中垂直线代表输入数组 [1,8,6,2,5,4,8,3,]在此情况下，容器能够容纳水（表示为蓝色部分）的最大值为 49。
+```
+
 ```python
 def maxArea(self, height: List[int]) -> int:
     i, j = 0, len(height)-1
@@ -587,7 +623,6 @@ def maxArea(self, height: List[int]) -> int:
     return res
 ```
 :::
-![11. Container With Most Water](~@assets/lc-11.png#center)
 ::::
 :::::
 
@@ -595,11 +630,15 @@ def maxArea(self, height: List[int]) -> int:
 
 ## 1658. Minimum Operations to Reduce X to Zero
 
-**问题**： 给你一个整数数组(比如`nums = [1,1,4,2,3]`)和一个整数(比如`x = 5`), 每次操作你可以从`nums`的两个边选一个数, 然后从`x`中减去该元素的值。请问最少选多少个能把`x`刚好减到`0`。 
+::::: tip
+> **问题**： 给你一个整数数组和一个整数$X$, 每次操作你可以从两个边选一个数, 然后从$X$中减去该元素的值, 请问最少几次操作可以把$X$减到$0$
 
-**例子**： 比如上面这个例子里, 最少两次, 依次移除后两个元素，`x-3-2=0` 刚好为0
+```bash
+输入：nums = [1,1,4,2,3], x = 5
+输出：2
+解释：每次操作你可以从最左边或者最右边选一个数, 去减掉 X, 那么我们依次选择减掉右边2个数, 得到`X-3-2=0`, 所以两次操作
+```
 
-::::: details
 :::: tabs type: card
 ::: tab 分段求和
 这其实就是个求和问题, :one: 全在左边; :two: 全在右边; :three: 两个交叉
@@ -693,15 +732,21 @@ def spellchecker(self, wordlist: List[str], queries: List[str]) -> List[str]:
 :::
 ::::
 
+----
+
 ## 3. Longest Substring Without Repeating Characters
 
-:::: tip 无重复字符的最长子串
-**问题**： 给定一个字符串(例如`s='abcdfdc'`)，请你找出其中不含有重复字符的最长子串的长度(例如这里就是`abcdf`, 答案是5)。
+::: tip 无重复字符的最长子串
+> ![](~@assets/lc-3.png#right)
+> **问题**： 给定一个字符串, 找出其中不含有重复字符的最长子串的长度
+> - 滑动窗口，当没有重复字母的时候，移动右边界，当有重复字母的时候，移动左边界
+> - 这里左边界更新规则要取`max`是因为像 `pfdpppf`在遇到第二个`f`的时候，左边界不应该往后退(左边界应该一直往前走)
 
-::: details
-第一遍做的时候以为只有26个字母，结果还要考虑各种符号和数字，因此这里用上字典
-- 滑动窗口，当没有重复字母的时候，移动右边界，当有重复字母的时候，移动左边界
-- 这里左边界更新规则要取`max`是因为像 `pfdpppf`在遇到第二个`f`的时候，左边界不应该往后退(左边界应该一直往前走)
+```bash
+输入: s = "abcdfdc"
+输出: 5
+解释: `abcdf`是最长不重复子串, 长度是5
+```
 ```python                            
 def lengthOfLongestSubstring(self, s: str) -> int:
     m_ = dict(); 
@@ -714,13 +759,13 @@ def lengthOfLongestSubstring(self, s: str) -> int:
     return res
 ```
 :::
-![3. Longest Substring Without Repeating Characters](~@assets/lc-3.png#center)
-::::
+
+----
 
 ## 647. Palindromic Substrings
 
 ::::: tip 判断子字符串有多少个回文
-```
+```bash
 Input: "aaba"
 Output: 6
 Explanation: Six palindromic strings: "a", "a", "a", "aa", "aba", "b".
@@ -777,15 +822,16 @@ def countSubstrings(self, s: str) -> int:
 ::::
 :::::
 
+----
+
 ## 423. Reconstruct Original Digits from English 
 
-:::: tip 根据一个打乱了的英文表示的字符串以升序重构出阿拉伯数字
-```
+::: tip 根据一个打乱了的英文表示的字符串以升序重构出阿拉伯数字
+```bash
 Input:   "owoztneoer"
 Output:  "012"
 Explain: input由zero, one, two构成, 不会有剩余字符, input一定是valid
 ```
-::: details
 ```python
 ## 没啥可说的, 找规律, 统计每一个出现的频率, cnt[i]代表数字i所代表的字符串出现的频率
 def originalDigits(self, s: str) -> str:
@@ -801,4 +847,3 @@ def originalDigits(self, s: str) -> str:
     return res
 ```
 :::
-::::
